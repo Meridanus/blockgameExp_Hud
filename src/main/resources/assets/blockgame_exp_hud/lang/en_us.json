@@ -1,0 +1,13 @@
+{
+  "text.autoconfig.blockgame_exp_hud.title": "Mcmmo Durability Viewer Config",
+
+  "text.autoconfig.blockgame_exp_hud.option.durabilityBar": "Durability Bar NBT Tag's",
+  "text.autoconfig.blockgame_exp_hud.option.durabilityBar.MAX_DURABILITY_TAG": "Max Durability",
+  "text.autoconfig.blockgame_exp_hud.option.durabilityBar.DURABILITY_TAG": "Durability",
+
+  "text.autoconfig.blockgame_exp_hud.option.consumeValue": "Consume Options",
+  "text.autoconfig.blockgame_exp_hud.option.consumeValue.MAX_CONSUME_TAG": "Consume NBT Tag",
+  "text.autoconfig.blockgame_exp_hud.option.consumeValue.FULL_CONSUME_VALUE": "Full Consume At",
+  "text.autoconfig.blockgame_exp_hud.option.consumeValue.SINGLE_COLOR": "Use Single Color",
+  "text.autoconfig.blockgame_exp_hud.option.consumeValue.CONSUME_COLOR": "Color"
+}

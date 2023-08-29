@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "notker.blockgame_exp_hud.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+        "MixinInGameHud"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
