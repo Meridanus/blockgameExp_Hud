@@ -6,7 +6,6 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.minecraft.network.MessageType;
 import notker.blockgame_exp_hud.BlockgameExpHud;
-import notker.blockgame_exp_hud.ChatMessagesType;
 
 @Config(name = "blockgame_exp_hud")
 public class BlockgameExpHudConfig implements ConfigData {
