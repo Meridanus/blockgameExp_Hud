@@ -127,39 +127,30 @@ public class BlockgameExpHud implements ClientModInitializer {
 
     public void addExp(String message){
 
-        for (int i = 0; i < professionNames.length; i++) {
-            if (message.contains(professionNames[i])){
+        for (int p = 0; p < professionNames.length; p++) {
+            if (message.contains(professionNames[p])){
                 float currentExp = expValueFromString(message);
-                professionTotalSessionExp[i] += currentExp;
+                professionTotalSessionExp[p] += currentExp;
 
 
-                int step = professionSessionExpCount[i];
+                int index = professionSessionExpCount[p];
                 // Make sure Step is inside Array Boundary
-                if (step >= DEFAULT_MAX_SAMPLE_VALUE) {
-                    step = step % DEFAULT_MAX_SAMPLE_VALUE;
+                if (index >= DEFAULT_MAX_SAMPLE_VALUE) {
+                    index = index % DEFAULT_MAX_SAMPLE_VALUE;
                 }
-
                 // get the old stored value
-                float oldValue = professionsLastExpValues[i][step];
+                float oldValue = professionsLastExpValues[p][index];
                 LOGGER.fatal(oldValue);
                 // Add the current exp to the array [Profession type][Value]
-                professionsLastExpValues[i][step] = currentExp;
-
-                // Increment the sample value and keep the range in between 100 to 200 after the initial 0 to 100
-                if (professionSessionExpCount[i] + 1 >= DEFAULT_MAX_SAMPLE_VALUE * 2){
-                    professionSessionExpCount[i] = DEFAULT_MAX_SAMPLE_VALUE;
-                } else {
-                    professionSessionExpCount[i]++;
-                }
-
+                professionsLastExpValues[p][index] = currentExp;
+                // Increment the count
+                professionSessionExpCount[p]++;
                 // Add current exp to the Sum for the Average
-                professionSessionAverageTotalExp[i] += currentExp;
-
+                professionSessionAverageTotalExp[p] += currentExp;
                 // subtract the overwritten Value
-                professionSessionAverageTotalExp[i] -= oldValue;
-
+                professionSessionAverageTotalExp[p] -= oldValue;
                 // Calculate the Average
-                professionAverageSessionExp[i] = professionSessionAverageTotalExp[i] / Math.min(professionSessionExpCount[i], DEFAULT_MAX_SAMPLE_VALUE);
+                professionAverageSessionExp[p] = professionSessionAverageTotalExp[p] / Math.min(professionSessionExpCount[p], DEFAULT_MAX_SAMPLE_VALUE);
             }
         }
     }
