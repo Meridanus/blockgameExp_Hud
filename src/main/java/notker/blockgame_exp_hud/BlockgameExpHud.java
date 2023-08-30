@@ -69,17 +69,21 @@ public class BlockgameExpHud implements ClientModInitializer {
 
                 int color = config != null ? config.baseSettings.TEXT_COLOR : DEFAULT_TEXT_COLOR;
 
-                renderer.drawWithShadow(matrixStack, "Session Coin/EXP:", startHorizontal, startVertical, color);
+
 
                 if (coins > 0) {
-                    renderer.drawWithShadow(matrixStack, "Coins: " + coins, startHorizontal, startVertical + offset, color);
+                    renderer.drawWithShadow(matrixStack, "Coin's: " + coins, startHorizontal, startVertical, 0xFFAA00);
                 }
 
+                int row = 1;
+
                 for (int i = 0; i < professionNames.length; i++) {
+
                     if (professionTotalSessionExp[i] > 0f) {
-                        String total = String.format("%.1f",professionTotalSessionExp[i]) + "Σ";
-                        String average = String.format("%.1f", professionAverageSessionExp[i]) + "μ";
-                        renderer.drawWithShadow(matrixStack, professionNames[i] +": "+ total +" | Average: "+ average, startHorizontal, startVertical + ((i + 2) * offset), color);
+                        String total = String.format("%.1f",professionTotalSessionExp[i]) ;
+                        String average = String.format("%.1f", professionAverageSessionExp[i]) + "⌀"; //μ
+                        renderer.drawWithShadow(matrixStack, professionNames[i] +": "+ total +" | "+ average, startHorizontal, startVertical + ((row) * offset), color);
+                        row++;
                     }
 
                 }
@@ -116,7 +120,7 @@ public class BlockgameExpHud implements ClientModInitializer {
         }
 
         if (value.isEmpty()) return 0f;
-        LOGGER.info("EXP: " + value);
+        //LOGGER.info("EXP: " + value);
         return Float.parseFloat(value.toString());
     }
 
