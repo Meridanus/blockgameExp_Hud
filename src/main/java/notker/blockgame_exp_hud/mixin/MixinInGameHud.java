@@ -38,15 +38,17 @@ public class MixinInGameHud {
 
             if (text.getString().endsWith(" Coin.")) {
                 BlockgameExpHud.getInstance().coinValueFromString(text.getString());
+                ci.cancel();
+                return;
             }
 
             if (text.getString().contains(tag)) {
                 BlockgameExpHud.getInstance().addExp(text.getString());
-
+                ci.cancel();
+                return;
             }
 
-            ci.cancel();
-            return;
+
         }
 
 
