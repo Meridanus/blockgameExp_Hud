@@ -134,22 +134,22 @@ public class BlockgameExpHud implements ClientModInitializer {
 
 
                 int index = professionSessionExpCount[p];
-                // Make sure Step is inside Array Boundary
+                // Make sure index is inside Array Boundary
                 if (index >= DEFAULT_MAX_SAMPLE_VALUE) {
                     index = index % DEFAULT_MAX_SAMPLE_VALUE;
                 }
-                // get the old stored value
-                float oldValue = professionsLastExpValues[p][index];
-                // Add the current exp to the array [Profession type][Value]
-                professionsLastExpValues[p][index] = currentExp;
                 // Increment the count
                 professionSessionExpCount[p]++;
+
+                // subtract the old Value that's about to override
+                professionSessionAverageTotalExp[p] -= professionsLastExpValues[p][index];
+                // Add/override the current exp to the array [Profession type][Value]
+                professionsLastExpValues[p][index] = currentExp;
                 // Add current exp to the Sum for the Average
                 professionSessionAverageTotalExp[p] += currentExp;
-                // subtract the overwritten Value
-                professionSessionAverageTotalExp[p] -= oldValue;
+
                 // Calculate the Average
-                professionAverageSessionExp[p] = professionSessionAverageTotalExp[p] / Math.min(professionSessionExpCount[p], DEFAULT_MAX_SAMPLE_VALUE);
+                professionAverageSessionExp[p] = professionSessionAverageTotalExp[p] / Math.min(DEFAULT_MAX_SAMPLE_VALUE, professionSessionExpCount[p]);
             }
         }
     }
