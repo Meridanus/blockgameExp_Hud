@@ -61,11 +61,11 @@ public class BlockgameExpHudConfig implements ConfigData {
 
 
     public static class AdvancedSettings {
-        @Comment("Chat Message ID")
+        @Comment("Message types: CHAT, SYSTEM, GAME_INFO")
         public MessageType MESSAGE_TYPE = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
-        @Comment("EXP Chat String")
+        @Comment("Chat Message Contains Text")
         public String EXP_CHAT_TAG = BlockgameExpHud.DEFAULT_EXP_CHAT_TAG;
-        @Comment("Coin Chat String")
+        @Comment("Chat Message Contains Text")
         public String COIN_CHAT_TAG = BlockgameExpHud.DEFAULT_COIN_CHAT_TAG;
     }
 }

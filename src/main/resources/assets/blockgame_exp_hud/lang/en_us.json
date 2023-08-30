@@ -1,13 +1,22 @@
 {
-  "text.autoconfig.blockgame_exp_hud.title": "Mcmmo Durability Viewer Config",
+  "key.blockgame_exp_hud.switch": "Switch Total/Last",
+  "key.blockgame_exp_hud.toggle_hud": "Toggle Hud",
 
-  "text.autoconfig.blockgame_exp_hud.option.durabilityBar": "Durability Bar NBT Tag's",
-  "text.autoconfig.blockgame_exp_hud.option.durabilityBar.MAX_DURABILITY_TAG": "Max Durability",
-  "text.autoconfig.blockgame_exp_hud.option.durabilityBar.DURABILITY_TAG": "Durability",
+  "text.autoconfig.blockgame_exp_hud.title": "BlockGame EXP Hud Config",
 
-  "text.autoconfig.blockgame_exp_hud.option.consumeValue": "Consume Options",
-  "text.autoconfig.blockgame_exp_hud.option.consumeValue.MAX_CONSUME_TAG": "Consume NBT Tag",
-  "text.autoconfig.blockgame_exp_hud.option.consumeValue.FULL_CONSUME_VALUE": "Full Consume At",
-  "text.autoconfig.blockgame_exp_hud.option.consumeValue.SINGLE_COLOR": "Use Single Color",
-  "text.autoconfig.blockgame_exp_hud.option.consumeValue.CONSUME_COLOR": "Color"
+  "text.autoconfig.blockgame_exp_hud.option.ENABLED": "Hud Enable",
+  "text.autoconfig.blockgame_exp_hud.option.hudSettings": "Hud Settings",
+    "text.autoconfig.blockgame_exp_hud.option.hudSettings.X_POS": "X Hud Position",
+    "text.autoconfig.blockgame_exp_hud.option.hudSettings.Y_POS": "Y Hud Position",
+    "text.autoconfig.blockgame_exp_hud.option.hudSettings.SPACING": "Spacing Between Rows",
+    "text.autoconfig.blockgame_exp_hud.option.hudSettings.COIN_ENABLED": "Show Coins On Hud",
+    "text.autoconfig.blockgame_exp_hud.option.hudSettings.TEXT_COLOR": "Hud Text Color",
+    "text.autoconfig.blockgame_exp_hud.option.hudSettings.COIN_COLOR": "Hud Coin Text Color",
+  "text.autoconfig.blockgame_exp_hud.option.chatSettings": "Chat Settings",
+    "text.autoconfig.blockgame_exp_hud.option.chatSettings.CHAT_EXP_ENABLED": "Hide Exp Chat Messages",
+    "text.autoconfig.blockgame_exp_hud.option.chatSettings.CHAT_COIN_ENABLED": "Hide Coin Deposit Chat Messages",
+  "text.autoconfig.blockgame_exp_hud.option.advancedSettings": "Advanced Settings",
+    "text.autoconfig.blockgame_exp_hud.option.advancedSettings.MESSAGE_TYPE": "Chat Message Type",
+    "text.autoconfig.blockgame_exp_hud.option.advancedSettings.EXP_CHAT_TAG": "EXP Search Tag",
+    "text.autoconfig.blockgame_exp_hud.option.advancedSettings.COIN_CHAT_TAG": "Coin Search Tag"
 }
