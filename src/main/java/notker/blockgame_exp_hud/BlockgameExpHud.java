@@ -18,6 +18,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 
 public class BlockgameExpHud implements ClientModInitializer {
 
@@ -47,7 +51,7 @@ public class BlockgameExpHud implements ClientModInitializer {
 
 
 
-    public static String[] professionNames = {"Herbalism", "Fishing", "Archaeology", "Logging", "Mining", "Runecarving"};
+    public static String[] professionNames = {"Archaeology", "Einherjar", "Fishing", "Herbalism", "Logging", "Mining", "Runecarving"};
     public float[] professionTotalSessionExp = new float[professionNames.length];
     public float[] professionAverageSessionExp = new float[professionNames.length];
     public float[] professionSessionAverageTotalExp = new float[professionNames.length];
@@ -128,8 +132,8 @@ public class BlockgameExpHud implements ClientModInitializer {
         for (int i = 0; i < professionNames.length; i++) {
 
             if (professionTotalSessionExp[i] > 0f) {
-                String total = showGlobal ? String.format("%.1f",professionTotalSessionExp[i]) : String.format("%.1f",professionSessionAverageTotalExp[i]);
-                String average = showGlobal ? String.format("%.1f",professionTotalSessionExp[i] / professionSessionExpCount[i]) + "⌀" : String.format("%.1f", professionAverageSessionExp[i]) + "⌀"; //μ
+                String total = showGlobal ? formatNumber(professionTotalSessionExp[i]) : formatNumber(professionSessionAverageTotalExp[i]);
+                String average = showGlobal ? formatNumber(professionTotalSessionExp[i] / professionSessionExpCount[i]) + "⌀" : formatNumber(professionAverageSessionExp[i]) + "⌀"; //μ
                 renderer.drawWithShadow(matrixStack, professionNames[i] +": "+ total +" | "+ average, startHorizontal, startVertical + ((row) * offset), color);
                 row++;
             }
@@ -167,6 +171,13 @@ public class BlockgameExpHud implements ClientModInitializer {
         if (value.isEmpty()) return 0f;
         //LOGGER.info("EXP: " + value);
         return Float.parseFloat(value.toString());
+    }
+
+    public String formatNumber(Float input){
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.GERMANY);
+        DecimalFormat df = (DecimalFormat) nf;
+        df.applyPattern("###,###,###.0");
+        return df.format(input);
     }
 
 
