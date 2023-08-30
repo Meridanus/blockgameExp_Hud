@@ -139,6 +139,9 @@ public class BlockgameExpHud implements ClientModInitializer {
                     step = step % DEFAULT_MAX_SAMPLE_VALUE;
                 }
 
+                // get the old stored value
+                float oldValue = professionsLastExpValues[i][step];
+                LOGGER.fatal(oldValue);
                 // Add the current exp to the array [Profession type][Value]
                 professionsLastExpValues[i][step] = currentExp;
 
@@ -152,19 +155,11 @@ public class BlockgameExpHud implements ClientModInitializer {
                 // Add current exp to the Sum for the Average
                 professionSessionAverageTotalExp[i] += currentExp;
 
-                // is over the max value? subtract the first inserted one
-                if (professionSessionExpCount[i] >= DEFAULT_MAX_SAMPLE_VALUE){
-                    int index = professionSessionExpCount[i] % DEFAULT_MAX_SAMPLE_VALUE;
-                    professionSessionAverageTotalExp[i] -= professionsLastExpValues[i][index];
+                // subtract the overwritten Value
+                professionSessionAverageTotalExp[i] -= oldValue;
 
-                    // Calculate the Average
-                    professionAverageSessionExp[i] = professionSessionAverageTotalExp[i] / index;
-                } else {
-                    // Calculate the Average (the first 100 values)
-                    professionAverageSessionExp[i] = professionSessionAverageTotalExp[i] / professionSessionExpCount[i];
-                }
-
-
+                // Calculate the Average
+                professionAverageSessionExp[i] = professionSessionAverageTotalExp[i] / Math.min(professionSessionExpCount[i], DEFAULT_MAX_SAMPLE_VALUE);
             }
         }
     }
