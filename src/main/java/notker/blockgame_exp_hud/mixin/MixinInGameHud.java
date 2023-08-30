@@ -19,33 +19,37 @@ public class MixinInGameHud {
     public void addChatMessage(MessageType messageType, Text text, UUID uUID, CallbackInfo ci) {
 
         BlockgameExpHudConfig config = BlockgameExpHud.config;
-        String tag;
-        boolean enabled;
-        byte id;
+        String expTag, coinTag;
+        boolean enabled, hideExp, hideCoin;
+        MessageType type;
 
         if (config != null) {
-            tag = config.advancedSettings.CHAT_TAG;
-            enabled = config.baseSettings.ENABLED;
-            id = config.advancedSettings.MESSAGE_TYPE;
+            expTag = config.advancedSettings.EXP_CHAT_TAG;
+            coinTag = config.advancedSettings.COIN_CHAT_TAG;
+            enabled = config.ENABLED;
+            type = config.advancedSettings.MESSAGE_TYPE;
+            hideExp = config.chatSettings.CHAT_EXP_ENABLED;
+            hideCoin = config.chatSettings.CHAT_COIN_ENABLED;
         } else {
-            tag = BlockgameExpHud.DEFAULT_CHAT_TAG;
-            enabled = BlockgameExpHud.DEFAULT_ENABLED_VALUE;
-            id = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
+            expTag = BlockgameExpHud.DEFAULT_EXP_CHAT_TAG;
+            coinTag = BlockgameExpHud.DEFAULT_COIN_CHAT_TAG;
+            enabled = BlockgameExpHud.DEFAULT_ENABLED;
+            type = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
+            hideExp = BlockgameExpHud.DEFAULT_CHAT_EXP_ENABLED;
+            hideCoin = BlockgameExpHud.DEFAULT_CHAT_COIN_ENABLED;
         }
 
 
-        if (enabled && messageType.getId() == id){
+        if (enabled && messageType == type){
 
-            if (text.getString().endsWith(" Coin.")) {
+            if (text.getString().endsWith(coinTag)) {
                 BlockgameExpHud.getInstance().coinValueFromString(text.getString());
-                ci.cancel();
-                return;
+                if (hideCoin) ci.cancel();
             }
 
-            if (text.getString().contains(tag)) {
+            if (text.getString().contains(expTag)) {
                 BlockgameExpHud.getInstance().addExp(text.getString());
-                ci.cancel();
-                return;
+                if (hideExp) ci.cancel();
             }
 
 
