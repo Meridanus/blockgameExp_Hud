@@ -140,7 +140,6 @@ public class BlockgameExpHud implements ClientModInitializer {
                 }
                 // get the old stored value
                 float oldValue = professionsLastExpValues[p][index];
-                LOGGER.fatal(oldValue);
                 // Add the current exp to the array [Profession type][Value]
                 professionsLastExpValues[p][index] = currentExp;
                 // Increment the count
