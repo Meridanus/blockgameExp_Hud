@@ -22,6 +22,10 @@ public class BlockgameExpHudConfig implements ConfigData {
         @Comment("The color for the Text")
         @ConfigEntry.ColorPicker
         public Integer TEXT_COLOR = BlockgameExpHud.DEFAULT_TEXT_COLOR;
+
+        @Comment("The color for the Coin Text")
+        @ConfigEntry.ColorPicker
+        public Integer COIN_COLOR = BlockgameExpHud.DEFAULT_COIN_COLOR;
     }
 
     @Comment("Advanced Settings")

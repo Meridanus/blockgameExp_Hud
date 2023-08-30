@@ -26,7 +26,7 @@ public class BlockgameExpHud implements ClientModInitializer {
     public static final Byte DEFAULT_MESSAGE_TYPE_VALUE = 1;
     public static final Boolean DEFAULT_ENABLED_VALUE = true;
     public static final Integer DEFAULT_TEXT_COLOR = 0xffffff;
-
+    public static final Integer DEFAULT_COIN_COLOR = 0xFFAA00;
     public static final Integer DEFAULT_MAX_SAMPLE_VALUE = 100;
 
 
@@ -68,11 +68,11 @@ public class BlockgameExpHud implements ClientModInitializer {
                 float offset = 10;
 
                 int color = config != null ? config.baseSettings.TEXT_COLOR : DEFAULT_TEXT_COLOR;
-
+                int coinColor = config != null ? config.baseSettings.COIN_COLOR : DEFAULT_COIN_COLOR;
 
 
                 if (coins > 0) {
-                    renderer.drawWithShadow(matrixStack, "Coin's: " + coins, startHorizontal, startVertical, 0xFFAA00);
+                    renderer.drawWithShadow(matrixStack, "Coin's: " + coins, startHorizontal, startVertical, coinColor);
                 }
 
                 int row = 1;
