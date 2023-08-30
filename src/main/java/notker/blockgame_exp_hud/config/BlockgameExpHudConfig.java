@@ -10,43 +10,36 @@ import notker.blockgame_exp_hud.BlockgameExpHud;
 public class BlockgameExpHudConfig implements ConfigData {
 
 
-    @Comment("Durability Bar")
+    @Comment("Base Settings")
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-    public DurabilityBar durabilityBar = new DurabilityBar();
+    public BaseSettings baseSettings = new BaseSettings();
 
-    /**
-     * Durability Bar configuration schema.
-     */
-    public static class DurabilityBar {
-        @Comment("Max Durability Nbt Tag")
-        public String MAX_DURABILITY_TAG = BlockgameExpHud.DEFAULT_MAX_DURABILITY_TAG;
 
-        @Comment("Durability Nbt Tag")
-        public String DURABILITY_TAG = BlockgameExpHud.DEFAULT_DURABILITY_TAG;
+    public static class BaseSettings {
+        @Comment("Hud Enabled?")
+        public boolean ENABLED = BlockgameExpHud.DEFAULT_ENABLED_VALUE;
+
+        @Comment("The color for the Text")
+        @ConfigEntry.ColorPicker
+        public Integer TEXT_COLOR = BlockgameExpHud.DEFAULT_TEXT_COLOR;
     }
 
-    @Comment("Consume Value")
-    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-    public ConsumeValue consumeValue = new ConsumeValue();
+    @Comment("Advanced Settings")
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+    public AdvancedSettings advancedSettings = new AdvancedSettings();
 
-    /**
-     * Durability Bar configuration schema.
-     */
-    public static class ConsumeValue {
 
-        @Comment("Max Consume Nbt Tag")
-        public String MAX_CONSUME_TAG = BlockgameExpHud.DEFAULT_MAX_CONSUME_TAG;
+    public static class AdvancedSettings {
+        @Comment("Chat String")
+        public String CHAT_TAG = BlockgameExpHud.DEFAULT_CHAT_TAG;
 
-        @Comment("At this value the Color is Green \n Below it fades to Red")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 64)
-        public Integer FULL_CONSUME_VALUE = BlockgameExpHud.DEFAULT_FULL_CONSUME_VALUE;
+        @Comment("Chat Message ID")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 2)
+        public Byte MESSAGE_TYPE = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
 
-        @Comment("Single color for the Consume number")
-        public boolean SINGLE_COLOR = BlockgameExpHud.DEFAULT_SINGLE_COLOR;
-
-        @Comment("The color for the Consume number")
-        @ConfigEntry.ColorPicker
-        public Integer CONSUME_COLOR = BlockgameExpHud.DEFAULT_CONSUME_COLOR;
+        @Comment("Sampels to calculate Average")
+        @ConfigEntry.BoundedDiscrete(min = 10, max = 100)
+        public Integer SAMPLES = BlockgameExpHud.DEFAULT_MAX_SAMPLE_VALUE;
 
     }
 }

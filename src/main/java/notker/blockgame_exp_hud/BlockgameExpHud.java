@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,21 +22,23 @@ public class BlockgameExpHud implements ClientModInitializer {
     public static BlockgameExpHudConfig config;
     public static ConfigHolder<BlockgameExpHudConfig> configHolder;
 
-    public static final String DEFAULT_MAX_DURABILITY_TAG = "MMOITEMS_MAX_DURABILITY";
-    public static final String DEFAULT_DURABILITY_TAG = "MMOITEMS_DURABILITY";
-    public static final String DEFAULT_MAX_CONSUME_TAG = "MMOITEMS_MAX_CONSUME";
-    public static final Integer DEFAULT_FULL_CONSUME_VALUE = 5;
-    public static final Boolean DEFAULT_SINGLE_COLOR = false;
-    public static final Integer DEFAULT_CONSUME_COLOR = 2149464;
+    public static final String DEFAULT_CHAT_TAG = "[EXP]";
+    public static final Byte DEFAULT_MESSAGE_TYPE_VALUE = 1;
+    public static final Boolean DEFAULT_ENABLED_VALUE = true;
+    public static final Integer DEFAULT_TEXT_COLOR = 0xffffff;
+
+    public static final Integer DEFAULT_MAX_SAMPLE_VALUE = 100;
 
 
 
-    public float herbalismExp = 0f;
-    public float miningExp = 0f;
-    public float fishingExp = 0f;
-    public float archeologyExp = 0f;
-    public float loggingExp = 0f;
-    public float runecraftingExp = 0f;
+    public static String[] professionNames = {"Herbalism", "Fishing", "Archaeology", "Logging", "Mining", "Runecarving"};
+    public float[] professionTotalSessionExp = new float[professionNames.length];
+    public float[] professionAverageSessionExp = new float[professionNames.length];
+    public float[] professionSessionAverageTotalExp = new float[professionNames.length];
+    public int[] professionSessionExpCount = new int[professionNames.length];
+    public float[][] professionsLastExpValues = new float[professionNames.length][DEFAULT_MAX_SAMPLE_VALUE];
+
+    public int coins = 0;
 
 
 
@@ -58,18 +59,32 @@ public class BlockgameExpHud implements ClientModInitializer {
 
             @Override
             public void onHudRender(MatrixStack matrixStack, float tickDelta) {
+                boolean enabled = config != null ? config.baseSettings.ENABLED : DEFAULT_ENABLED_VALUE;
+                if (!enabled) return;
+
                 TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
                 float startVertical = 30;
                 float startHorizontal = 3;
                 float offset = 10;
 
-                renderer.drawWithShadow(matrixStack, "Session EXP:", startHorizontal, startVertical, 0xffffff, true);
-                renderer.drawWithShadow(matrixStack, "Herbalism: " + herbalismExp, startHorizontal, startVertical + offset, 0xffffff);
-                renderer.drawWithShadow(matrixStack, "Mining: " + miningExp, startHorizontal, startVertical + (2 * offset), 0xffffff);
-                renderer.drawWithShadow(matrixStack, "Logging: " + loggingExp, startHorizontal, startVertical + (3 * offset), 0xffffff);
-                renderer.drawWithShadow(matrixStack, "Archaeology: " + archeologyExp, startHorizontal, startVertical + (4 * offset), 0xffffff);
-                renderer.drawWithShadow(matrixStack, "Fishing: " + fishingExp, startHorizontal, startVertical + (5 * offset), 0xffffff);
-                renderer.drawWithShadow(matrixStack, "Runecarving: " + runecraftingExp, startHorizontal, startVertical + (6 * offset), 0xffffff);
+                int color = config != null ? config.baseSettings.TEXT_COLOR : DEFAULT_TEXT_COLOR;
+
+                renderer.drawWithShadow(matrixStack, "Session Coin/EXP:", startHorizontal, startVertical, color);
+
+                if (coins > 0) {
+                    renderer.drawWithShadow(matrixStack, "Coins: " + coins, startHorizontal, startVertical + offset, color);
+                }
+
+                for (int i = 0; i < professionNames.length; i++) {
+                    if (professionTotalSessionExp[i] > 0f) {
+                        String total = String.format("%.1f",professionTotalSessionExp[i]) + "Σ";
+                        String average = String.format("%.1f", professionAverageSessionExp[i]) + "μ";
+                        renderer.drawWithShadow(matrixStack, professionNames[i] +": "+ total +" | Average: "+ average, startHorizontal, startVertical + ((i + 2) * offset), color);
+                    }
+
+                }
+
+
             }
         });
 
@@ -81,8 +96,19 @@ public class BlockgameExpHud implements ClientModInitializer {
         return instance;
     }
 
+    public void coinValueFromString(String message){
+        String value = "";
 
-    public float getExpValue(String message){
+        for (int i = message.lastIndexOf("d") + 2; i < message.lastIndexOf(" "); i++) {
+            value += message.charAt(i);
+        }
+
+        if (value.isEmpty()) return;
+        //LOGGER.fatal("Coin: " + value);
+        coins += Integer.parseInt(value);
+    }
+
+    public float expValueFromString(String message){
         StringBuilder value = new StringBuilder();
 
         for (int i = message.indexOf("+") + 1; i < message.lastIndexOf(" "); i++) {
@@ -90,64 +116,54 @@ public class BlockgameExpHud implements ClientModInitializer {
         }
 
         if (value.isEmpty()) return 0f;
-
+        LOGGER.info("EXP: " + value);
         return Float.parseFloat(value.toString());
     }
 
 
     public void addExp(String message){
-        if (message.contains("Herbalism")) {
-            Float value = getExpValue(message);
-            System.out.println(value);
-            herbalismExp += value;
-            System.out.println("Herbalism Session EXP: " + herbalismExp);
-            MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.of("Herbalism Session EXP: " + Float.toString(herbalismExp)), false);
-            return;
-        }
 
-        if (message.contains("Fishing")) {
-            Float value = getExpValue(message);
-            System.out.println(value);
-            fishingExp += value;
-            System.out.println("Fishing Session EXP: " + fishingExp);
-            MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.of("Fishing Session EXP: " + Float.toString(fishingExp)), false);
-            return;
-        }
+        for (int i = 0; i < professionNames.length; i++) {
+            if (message.contains(professionNames[i])){
+                float currentExp = expValueFromString(message);
+                professionTotalSessionExp[i] += currentExp;
 
-        if (message.contains("Archaeology")) {
-            Float value = getExpValue(message);
-            System.out.println(value);
-            archeologyExp += value;
-            System.out.println("Archaeology Session EXP: " + archeologyExp);
-            MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.of("Archaeology Session EXP: " + Float.toString(archeologyExp)), false);
-            return;
-        }
 
-        if (message.contains("Logging")) {
-            Float value = getExpValue(message);
-            System.out.println(value);
-            loggingExp += value;
-            System.out.println("Logging Session EXP: " + loggingExp);
-            MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.of("Logging Session EXP: " + Float.toString(loggingExp)), false);
-            return;
-        }
+                int step = professionSessionExpCount[i];
+                // Make sure Step is inside Array Boundary
+                if (step >= DEFAULT_MAX_SAMPLE_VALUE) {
+                    step = step % DEFAULT_MAX_SAMPLE_VALUE;
+                }
 
-        if (message.contains("Mining")) {
-            Float value = getExpValue(message);
-            System.out.println(value);
-            miningExp += value;
-            System.out.println("Mining Session EXP: " + miningExp);
-            MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.of("Mining Session EXP: " + Float.toString(miningExp)), false);
-            return;
-        }
+                // Add the current exp to the array [Profession type][Value]
+                professionsLastExpValues[i][step] = currentExp;
 
-        if (message.contains("Runecarving")) {
-            Float value = getExpValue(message);
-            System.out.println(value);
-            runecraftingExp += value;
-            System.out.println("Runecarving Session EXP: " + runecraftingExp);
-            MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.of("Runecarving Session EXP: " + Float.toString(runecraftingExp)), false);
-            return;
+                // Increment the sample value and keep the range in between 100 to 200 after the initial 0 to 100
+                if (professionSessionExpCount[i] + 1 >= DEFAULT_MAX_SAMPLE_VALUE * 2){
+                    professionSessionExpCount[i] = DEFAULT_MAX_SAMPLE_VALUE;
+                } else {
+                    professionSessionExpCount[i]++;
+                }
+
+                // Add current exp to the Sum for the Average
+                professionSessionAverageTotalExp[i] += currentExp;
+
+                // is over the max value? subtract the first inserted one
+                if (professionSessionExpCount[i] >= DEFAULT_MAX_SAMPLE_VALUE){
+                    int index = professionSessionExpCount[i] % DEFAULT_MAX_SAMPLE_VALUE;
+                    professionSessionAverageTotalExp[i] -= professionsLastExpValues[i][index];
+
+                    // Calculate the Average
+                    professionAverageSessionExp[i] = professionSessionAverageTotalExp[i] / index;
+                } else {
+                    // Calculate the Average (the first 100 values)
+                    professionAverageSessionExp[i] = professionSessionAverageTotalExp[i] / professionSessionExpCount[i];
+                }
+
+
+            }
         }
     }
+
+
 }
