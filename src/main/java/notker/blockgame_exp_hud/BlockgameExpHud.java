@@ -4,30 +4,46 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.network.MessageType;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.GLFW;
 
 
 public class BlockgameExpHud implements ClientModInitializer {
 
     private static BlockgameExpHud instance;
+    public static boolean hideOverlay = false;
+    public static boolean showGlobal = true;
 
     public static Logger LOGGER = LogManager.getLogger("blockgame_exp_hud");
 
     public static BlockgameExpHudConfig config;
     public static ConfigHolder<BlockgameExpHudConfig> configHolder;
 
-    public static final String DEFAULT_CHAT_TAG = "[EXP]";
-    public static final Byte DEFAULT_MESSAGE_TYPE_VALUE = 1;
-    public static final Boolean DEFAULT_ENABLED_VALUE = true;
+    public static final String DEFAULT_EXP_CHAT_TAG = "[EXP]";
+    public static final String DEFAULT_COIN_CHAT_TAG = " Coin.";
+    public static final MessageType DEFAULT_MESSAGE_TYPE_VALUE = MessageType.SYSTEM;
+    public static final Boolean DEFAULT_ENABLED = true;
+    public static final Boolean DEFAULT_CHAT_EXP_ENABLED = true;
     public static final Integer DEFAULT_TEXT_COLOR = 0xffffff;
+    public static final Boolean DEFAULT_CHAT_COIN_ENABLED = true;
+    public static final Boolean DEFAULT_COIN_ENABLED = true;
     public static final Integer DEFAULT_COIN_COLOR = 0xFFAA00;
-    public static final Integer DEFAULT_MAX_SAMPLE_VALUE = 100;
+    public static final Integer DEFAULT_MAX_SAMPLE_VALUE = 128;
+    public static final Float DEFAULT_X_POS = 3f;
+    public static final Float DEFAULT_Y_POS = 30f;
+    public static final Float DEFAULT_SPACING = 10f;
+
 
 
 
@@ -40,7 +56,8 @@ public class BlockgameExpHud implements ClientModInitializer {
 
     public int coins = 0;
 
-
+    private KeyBinding blockgameExpHudToggleKey;
+    private KeyBinding blockgameExpHudSwitchKey;
 
 
     @Override
@@ -53,44 +70,72 @@ public class BlockgameExpHud implements ClientModInitializer {
 
         LOGGER.info("Config Loaded");
 
+        blockgameExpHudToggleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.blockgame_exp_hud.toggle_hud", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "Blockgame Exp Hud"));
+        blockgameExpHudSwitchKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.blockgame_exp_hud.switch", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_HOME, "Blockgame Exp Hud"));
 
 
-        HudRenderCallback.EVENT.register(new HudRenderCallback() {
+        //Register Tick Callback
+        ClientTickEvents.END_CLIENT_TICK.register(this::tick);
+        //Register HudRender Callback
+        HudRenderCallback.EVENT.register(this::onHudRender);
 
-            @Override
-            public void onHudRender(MatrixStack matrixStack, float tickDelta) {
-                boolean enabled = config != null ? config.baseSettings.ENABLED : DEFAULT_ENABLED_VALUE;
-                if (!enabled) return;
+    }
 
-                TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-                float startVertical = 30;
-                float startHorizontal = 3;
-                float offset = 10;
+    public void tick(MinecraftClient client) {
+        //toggle render
+        if (blockgameExpHudToggleKey.wasPressed()) hideOverlay = !hideOverlay;
+        //toggle modi
+        if (blockgameExpHudSwitchKey.wasPressed()) showGlobal = !showGlobal;
 
-                int color = config != null ? config.baseSettings.TEXT_COLOR : DEFAULT_TEXT_COLOR;
-                int coinColor = config != null ? config.baseSettings.COIN_COLOR : DEFAULT_COIN_COLOR;
+    }
+
+    public void onHudRender(MatrixStack matrixStack, float tickDelta) {
+        boolean enabled = config != null ? config.ENABLED : DEFAULT_ENABLED;
+        if (!enabled || hideOverlay) return;
+
+        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+        float startVertical, startHorizontal, offset;
+        int color, coinColor;
+        boolean coinEnabled;
+
+        if (config != null) {
+            startVertical = config.hudSettings.Y_POS;
+            startHorizontal = config.hudSettings.X_POS;
+            offset = config.hudSettings.SPACING;
+            color = config.hudSettings.TEXT_COLOR;
+            coinColor = config.hudSettings.COIN_COLOR;
+            coinEnabled = config.hudSettings.COIN_ENABLED;
+        } else {
+            startVertical = BlockgameExpHud.DEFAULT_Y_POS;
+            startHorizontal = BlockgameExpHud.DEFAULT_X_POS;
+            offset = BlockgameExpHud.DEFAULT_SPACING;
+            color = BlockgameExpHud.DEFAULT_TEXT_COLOR;
+            coinColor = BlockgameExpHud.DEFAULT_COIN_COLOR;
+            coinEnabled = BlockgameExpHud.DEFAULT_COIN_ENABLED;
+        }
 
 
-                if (coins > 0) {
-                    renderer.drawWithShadow(matrixStack, "Coin's: " + coins, startHorizontal, startVertical, coinColor);
-                }
 
-                int row = 1;
+        //Description
+        renderer.drawWithShadow(matrixStack, showGlobal ? "Session EXP Stats:" : "Last " + DEFAULT_MAX_SAMPLE_VALUE + " EXP Stats:", startHorizontal, startVertical, color);
 
-                for (int i = 0; i < professionNames.length; i++) {
+        int row = 1;
+        if (coins > 0 && coinEnabled) {
+            renderer.drawWithShadow(matrixStack, "Coin's: " + coins, startHorizontal, startVertical + ((row) * offset), coinColor);
+            row++;
+        }
 
-                    if (professionTotalSessionExp[i] > 0f) {
-                        String total = String.format("%.1f",professionTotalSessionExp[i]) ;
-                        String average = String.format("%.1f", professionAverageSessionExp[i]) + "⌀"; //μ
-                        renderer.drawWithShadow(matrixStack, professionNames[i] +": "+ total +" | "+ average, startHorizontal, startVertical + ((row) * offset), color);
-                        row++;
-                    }
+        for (int i = 0; i < professionNames.length; i++) {
 
-                }
-
-
+            if (professionTotalSessionExp[i] > 0f) {
+                String total = showGlobal ? String.format("%.1f",professionTotalSessionExp[i]) : String.format("%.1f",professionSessionAverageTotalExp[i]);
+                String average = showGlobal ? String.format("%.1f",professionTotalSessionExp[i] / professionSessionExpCount[i]) + "⌀" : String.format("%.1f", professionAverageSessionExp[i]) + "⌀"; //μ
+                renderer.drawWithShadow(matrixStack, professionNames[i] +": "+ total +" | "+ average, startHorizontal, startVertical + ((row) * offset), color);
+                row++;
             }
-        });
+
+        }
+
 
     }
 

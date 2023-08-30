@@ -4,28 +4,56 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import net.minecraft.network.MessageType;
 import notker.blockgame_exp_hud.BlockgameExpHud;
+import notker.blockgame_exp_hud.ChatMessagesType;
 
 @Config(name = "blockgame_exp_hud")
 public class BlockgameExpHudConfig implements ConfigData {
 
+    @Comment("Hud Enabled?")
+    public boolean ENABLED = BlockgameExpHud.DEFAULT_ENABLED;
 
-    @Comment("Base Settings")
+    @Comment("Hud Settings")
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-    public BaseSettings baseSettings = new BaseSettings();
+    public HudSettings hudSettings = new HudSettings();
 
+    public static class HudSettings {
+        @Comment("Horizontal Position")
+        public Float X_POS = BlockgameExpHud.DEFAULT_X_POS;
 
-    public static class BaseSettings {
-        @Comment("Hud Enabled?")
-        public boolean ENABLED = BlockgameExpHud.DEFAULT_ENABLED_VALUE;
+        @Comment("Vertical Position")
+        public Float Y_POS = BlockgameExpHud.DEFAULT_Y_POS;
 
-        @Comment("The color for the Text")
+        @Comment("Line Spacing")
+        public Float SPACING = BlockgameExpHud.DEFAULT_SPACING;
+
+        @Comment("Show Coin In Hud")
+        public boolean COIN_ENABLED = BlockgameExpHud.DEFAULT_COIN_ENABLED;
+
+        @Comment("The EXP Text Color")
         @ConfigEntry.ColorPicker
         public Integer TEXT_COLOR = BlockgameExpHud.DEFAULT_TEXT_COLOR;
 
-        @Comment("The color for the Coin Text")
+        @Comment("The Coin Text Color")
         @ConfigEntry.ColorPicker
         public Integer COIN_COLOR = BlockgameExpHud.DEFAULT_COIN_COLOR;
+
+    }
+
+
+    @Comment("Chat Settings")
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public ChatSettings chatSettings = new ChatSettings();
+
+
+    public static class ChatSettings {
+        @Comment("remove Exp from Chat?")
+        public boolean CHAT_EXP_ENABLED = BlockgameExpHud.DEFAULT_CHAT_EXP_ENABLED;
+
+
+        @Comment("remove Coins from chat?")
+        public boolean CHAT_COIN_ENABLED = BlockgameExpHud.DEFAULT_CHAT_COIN_ENABLED;
     }
 
     @Comment("Advanced Settings")
@@ -34,17 +62,14 @@ public class BlockgameExpHudConfig implements ConfigData {
 
 
     public static class AdvancedSettings {
-        @Comment("Chat String")
-        public String CHAT_TAG = BlockgameExpHud.DEFAULT_CHAT_TAG;
+        @Comment("EXP Chat String")
+        public String EXP_CHAT_TAG = BlockgameExpHud.DEFAULT_EXP_CHAT_TAG;
 
         @Comment("Chat Message ID")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 2)
-        public Byte MESSAGE_TYPE = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
+        public MessageType MESSAGE_TYPE = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
 
-        @Comment("Sampels to calculate Average")
-        @ConfigEntry.BoundedDiscrete(min = 10, max = 100)
-        public Integer SAMPLES = BlockgameExpHud.DEFAULT_MAX_SAMPLE_VALUE;
-
+        @Comment("Coin Chat String")
+        public String COIN_CHAT_TAG = BlockgameExpHud.DEFAULT_COIN_CHAT_TAG;
     }
 }
 
