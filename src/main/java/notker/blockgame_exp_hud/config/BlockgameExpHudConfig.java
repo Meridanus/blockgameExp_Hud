@@ -27,6 +27,9 @@ public class BlockgameExpHudConfig implements ConfigData {
         @Comment("Line Spacing")
         public Float SPACING = BlockgameExpHud.DEFAULT_SPACING;
 
+        @Comment("Show Hud Background")
+        public boolean BACKGROUND_ENABLED = BlockgameExpHud.DEFAULT_BACKGROUND_ENABLED;
+
         @Comment("Show Coin In Hud")
         public boolean COIN_ENABLED = BlockgameExpHud.DEFAULT_COIN_ENABLED;
 
