@@ -142,7 +142,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
             textList[1] = "Coin's: " + coins;
         }
         for (int i = 0; i < professionNames.length; i++) {
-            if (professionTotalSessionExp[i] == 0f) {
+            if (professionTotalSessionExp[i] > 0f) {
                 String total = showGlobal ? formatNumber(professionTotalSessionExp[i]) : formatNumber(professionSessionAverageTotalExp[i]);
                 String average = showGlobal ? formatNumber(professionTotalSessionExp[i] / professionSessionExpCount[i]) + "⌀" : formatNumber(professionAverageSessionExp[i]) + "⌀"; //μ
                 textList[i + 2] = professionNames[i] +": "+ total +" | "+ average;
@@ -180,7 +180,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
         }
         // Draw Profession Text
         for (int i = 0; i < professionNames.length; i++) {
-            if (professionTotalSessionExp[i] == 0f) {
+            if (professionTotalSessionExp[i] > 0f) {
                 renderer.drawWithShadow(matrixStack, textList[i + 2], startHorizontal, startVertical + ((row) * offset), textColor);
                 row++;
             }
