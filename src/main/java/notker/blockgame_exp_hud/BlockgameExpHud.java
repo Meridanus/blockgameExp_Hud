@@ -132,12 +132,12 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
         String[] textList = new String[professionNames.length + 2];
         int textHeight = 8;
-        int textBoxWidth = renderer.getWidth(textList[0]);
         int textBoxHeight = textHeight;
         int borderWidth = 3;
 
         // Create all Text Strings
         textList[0] = showGlobal ? "Session EXP Stats:" : "Last " + DEFAULT_MAX_SAMPLE_VALUE + " EXP Stats:";
+        int textBoxWidth = renderer.getWidth(textList[0]);
         if (coins > 0 && coinEnabled) {
             textList[1] = "Coin's: " + coins;
         }
