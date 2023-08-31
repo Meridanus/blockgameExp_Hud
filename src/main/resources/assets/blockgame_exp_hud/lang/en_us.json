@@ -10,6 +10,7 @@
     "text.autoconfig.blockgame_exp_hud.option.hudSettings.Y_POS": "Y Hud Position",
     "text.autoconfig.blockgame_exp_hud.option.hudSettings.SPACING": "Spacing Between Rows",
     "text.autoconfig.blockgame_exp_hud.option.hudSettings.COIN_ENABLED": "Show Coins On Hud",
+    "text.autoconfig.blockgame_exp_hud.option.hudSettings.BACKGROUND_ENABLED": "Show Hud Background",
     "text.autoconfig.blockgame_exp_hud.option.hudSettings.TEXT_COLOR": "Hud Text Color",
     "text.autoconfig.blockgame_exp_hud.option.hudSettings.COIN_COLOR": "Hud Coin Text Color",
   "text.autoconfig.blockgame_exp_hud.option.chatSettings": "Chat Settings",
