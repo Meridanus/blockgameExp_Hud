@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,7 +24,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 
-public class BlockgameExpHud implements ClientModInitializer {
+public class BlockgameExpHud extends DrawableHelper implements ClientModInitializer {
 
     private static BlockgameExpHud instance;
     public static boolean hideOverlay = false;
@@ -47,6 +48,7 @@ public class BlockgameExpHud implements ClientModInitializer {
     public static final Float DEFAULT_X_POS = 3f;
     public static final Float DEFAULT_Y_POS = 30f;
     public static final Float DEFAULT_SPACING = 10f;
+    public static final Boolean DEFAULT_BACKGROUND_ENABLED = true;
 
 
 
@@ -97,49 +99,93 @@ public class BlockgameExpHud implements ClientModInitializer {
         boolean enabled = config != null ? config.ENABLED : DEFAULT_ENABLED;
         if (!enabled || hideOverlay) return;
 
-        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
         float startVertical, startHorizontal, offset;
-        int color, coinColor;
-        boolean coinEnabled;
+        int textColor, coinColor;
+        boolean coinEnabled, backgroundEnabled;
 
+        /* Multicolor text
+        OrderedText test = (new LiteralText("Test").formatted(Formatting.RED)).asOrderedText();
+        OrderedText test2 = (new LiteralText("Test").formatted(Formatting.WHITE)).asOrderedText();
+        OrderedText oText = OrderedText.innerConcat(test, test2);
+        renderer.drawWithShadow(matrixStack, oText, startHorizontal + 50, startVertical + 100, textColor);
+        */
+
+        // get Config Values
         if (config != null) {
             startVertical = config.hudSettings.Y_POS;
             startHorizontal = config.hudSettings.X_POS;
             offset = config.hudSettings.SPACING;
-            color = config.hudSettings.TEXT_COLOR;
+            textColor = config.hudSettings.TEXT_COLOR;
             coinColor = config.hudSettings.COIN_COLOR;
             coinEnabled = config.hudSettings.COIN_ENABLED;
+            backgroundEnabled = config.hudSettings.BACKGROUND_ENABLED;
         } else {
-            startVertical = BlockgameExpHud.DEFAULT_Y_POS;
-            startHorizontal = BlockgameExpHud.DEFAULT_X_POS;
-            offset = BlockgameExpHud.DEFAULT_SPACING;
-            color = BlockgameExpHud.DEFAULT_TEXT_COLOR;
-            coinColor = BlockgameExpHud.DEFAULT_COIN_COLOR;
-            coinEnabled = BlockgameExpHud.DEFAULT_COIN_ENABLED;
+            startVertical = DEFAULT_Y_POS;
+            startHorizontal = DEFAULT_X_POS;
+            offset = DEFAULT_SPACING;
+            textColor = DEFAULT_TEXT_COLOR;
+            coinColor = DEFAULT_COIN_COLOR;
+            coinEnabled = DEFAULT_COIN_ENABLED;
+            backgroundEnabled = DEFAULT_BACKGROUND_ENABLED;
         }
 
+        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+        String[] textList = new String[professionNames.length + 2];
+        int textHeight = 8;
+        int textBoxWidth = renderer.getWidth(textList[0]);
+        int textBoxHeight = textHeight;
+        int borderWidth = 3;
 
-
-        //Description
-        renderer.drawWithShadow(matrixStack, showGlobal ? "Session EXP Stats:" : "Last " + DEFAULT_MAX_SAMPLE_VALUE + " EXP Stats:", startHorizontal, startVertical, color);
-
-        int row = 1;
+        // Create all Text Strings
+        textList[0] = showGlobal ? "Session EXP Stats:" : "Last " + DEFAULT_MAX_SAMPLE_VALUE + " EXP Stats:";
         if (coins > 0 && coinEnabled) {
-            renderer.drawWithShadow(matrixStack, "Coin's: " + coins, startHorizontal, startVertical + ((row) * offset), coinColor);
-            row++;
+            textList[1] = "Coin's: " + coins;
         }
-
         for (int i = 0; i < professionNames.length; i++) {
-
-            if (professionTotalSessionExp[i] > 0f) {
+            if (professionTotalSessionExp[i] == 0f) {
                 String total = showGlobal ? formatNumber(professionTotalSessionExp[i]) : formatNumber(professionSessionAverageTotalExp[i]);
                 String average = showGlobal ? formatNumber(professionTotalSessionExp[i] / professionSessionExpCount[i]) + "⌀" : formatNumber(professionAverageSessionExp[i]) + "⌀"; //μ
-                renderer.drawWithShadow(matrixStack, professionNames[i] +": "+ total +" | "+ average, startHorizontal, startVertical + ((row) * offset), color);
+                textList[i + 2] = professionNames[i] +": "+ total +" | "+ average;
+                textBoxWidth = Math.max(textBoxWidth, renderer.getWidth(textList[i + 2]));
+            }
+        }
+
+        if (backgroundEnabled) {
+            // Calculate Background Height
+            for (int i = 1; i < textList.length; i++){
+                if (textList[i] != null){
+                    textBoxHeight += offset;
+                }
+            }
+            // Draw Background
+            int backgroundColor = MinecraftClient.getInstance().options.getTextBackgroundColor(0.3f);
+            fill(matrixStack,
+                    (int) startHorizontal - borderWidth,
+                    (int)startVertical - borderWidth,
+                    (int) startHorizontal + textBoxWidth + borderWidth,
+                    (int) startVertical + textBoxHeight + borderWidth,
+                    backgroundColor);
+        }
+
+
+
+        //Draw Title
+        renderer.drawWithShadow(matrixStack, textList[0], startHorizontal, startVertical, textColor);
+        int row = 1;
+
+        // Draw Coin Text
+        if (coins > 0 && coinEnabled) {
+            renderer.drawWithShadow(matrixStack, textList[1], startHorizontal, startVertical + ((row) * offset), coinColor);
+            row++;
+        }
+        // Draw Profession Text
+        for (int i = 0; i < professionNames.length; i++) {
+            if (professionTotalSessionExp[i] == 0f) {
+                renderer.drawWithShadow(matrixStack, textList[i + 2], startHorizontal, startVertical + ((row) * offset), textColor);
                 row++;
             }
 
         }
-
 
     }
 
@@ -174,8 +220,7 @@ public class BlockgameExpHud implements ClientModInitializer {
     }
 
     public String formatNumber(Float input){
-        NumberFormat nf = NumberFormat.getNumberInstance(Locale.GERMANY);
-        DecimalFormat df = (DecimalFormat) nf;
+        DecimalFormat df = (DecimalFormat)NumberFormat.getNumberInstance(Locale.GERMANY);
         df.applyPattern("###,###,###.0");
         return df.format(input);
     }
