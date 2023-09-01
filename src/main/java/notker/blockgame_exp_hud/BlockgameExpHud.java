@@ -13,7 +13,14 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.MessageType;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.OrderedText;
+import net.minecraft.util.Formatting;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +28,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Locale;
 
 
@@ -53,14 +61,26 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
 
 
-    public static String[] professionNames = {"Archaeology", "Einherjar", "Fishing", "Herbalism", "Logging", "Mining", "Runecarving"};
+    public static final String[] professionNames = {"Archaeology", "Einherjar", "Fishing", "Herbalism", "Logging", "Mining", "Runecarving"};
     public float[] professionTotalSessionExp = new float[professionNames.length];
     public float[] professionAverageSessionExp = new float[professionNames.length];
     public float[] professionSessionAverageTotalExp = new float[professionNames.length];
     public int[] professionSessionExpCount = new int[professionNames.length];
     public float[][] professionsLastExpValues = new float[professionNames.length][DEFAULT_MAX_SAMPLE_VALUE];
 
+    public static final String[] nbtKeyNames = {
+            "MMOITEMS_ADDITIONAL_EXPERIENCE_ARCHAEOLOGY",
+            "MMOITEMS_ADDITIONAL_EXPERIENCE",
+            "MMOITEMS_ADDITIONAL_EXPERIENCE_FISHING",
+            "MMOITEMS_ADDITIONAL_EXPERIENCE_HERBALISM",
+            "MMOITEMS_ADDITIONAL_EXPERIENCE_LOGGING",
+            "MMOITEMS_ADDITIONAL_EXPERIENCE_MINING",
+            "MMOITEMS_ADDITIONAL_EXPERIENCE_RUNECARVING"};
+    float[] equipmentBonusExp = new float[professionNames.length];
+    float[] mainHandBonusExp = new float[professionNames.length];
+
     public int coins = 0;
+
 
     private KeyBinding blockgameExpHudToggleKey;
     private KeyBinding blockgameExpHudSwitchKey;
@@ -87,13 +107,38 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
     }
 
+    //private int lastSelectedSlot = 0;
+    int ticksToWait = 15;
     public void tick(MinecraftClient client) {
         //toggle render
-        if (blockgameExpHudToggleKey.wasPressed()) hideOverlay = !hideOverlay;
+        if (blockgameExpHudToggleKey.wasPressed()) {
+            hideOverlay = !hideOverlay;
+        }
         //toggle modi
-        if (blockgameExpHudSwitchKey.wasPressed()) showGlobal = !showGlobal;
+        if (blockgameExpHudSwitchKey.wasPressed()) {
+            showGlobal = !showGlobal;
+        }
+        /*
+        PlayerEntity player = MinecraftClient.getInstance().player;
+
+        if (player != null && lastSelectedSlot != player.getInventory().selectedSlot) {
+            lastSelectedSlot = player.getInventory().selectedSlot;
+            playerEquipmentBonusExp();
+        }
+         */
+
+        if (ticksToWait <= 0) {
+            // Reset Time
+            ticksToWait = 15;
+            //Update Bonus Exp information
+            playerEquipmentBonusExp();
+        } else {
+            ticksToWait--;
+        }
+
 
     }
+
 
     public void onHudRender(MatrixStack matrixStack, float tickDelta) {
         boolean enabled = config != null ? config.ENABLED : DEFAULT_ENABLED;
@@ -103,12 +148,12 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
         int textColor, coinColor;
         boolean coinEnabled, backgroundEnabled;
 
-        /* Multicolor text
-        OrderedText test = (new LiteralText("Test").formatted(Formatting.RED)).asOrderedText();
-        OrderedText test2 = (new LiteralText("Test").formatted(Formatting.WHITE)).asOrderedText();
-        OrderedText oText = OrderedText.innerConcat(test, test2);
-        renderer.drawWithShadow(matrixStack, oText, startHorizontal + 50, startVertical + 100, textColor);
-        */
+        // Multicolor text
+        //OrderedText test = (new LiteralText("Test").formatted(Formatting.RED)).asOrderedText();
+        //OrderedText test2 = (new LiteralText("Test").asOrderedText());
+        //OrderedText oText = OrderedText.innerConcat(test, test2);
+
+
 
         // get Config Values
         if (config != null) {
@@ -131,9 +176,10 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
         String[] textList = new String[professionNames.length + 2];
-        int textHeight = 8;
-        int textBoxHeight = textHeight;
+        int textBoxHeight = 8;
         int borderWidth = 3;
+
+        //renderer.drawWithShadow(matrixStack, oText, startHorizontal + 50, startVertical + 100, coinColor);
 
         // Create all Text Strings
         textList[0] = showGlobal ? "Session EXP Stats:" : "Last " + DEFAULT_MAX_SAMPLE_VALUE + " EXP Stats:";
@@ -145,7 +191,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
             if (professionTotalSessionExp[i] > 0f) {
                 String total = showGlobal ? formatNumber(professionTotalSessionExp[i]) : formatNumber(professionSessionAverageTotalExp[i]);
                 String average = showGlobal ? formatNumber(professionTotalSessionExp[i] / professionSessionExpCount[i]) + "⌀" : formatNumber(professionAverageSessionExp[i]) + "⌀"; //μ
-                textList[i + 2] = professionNames[i] +": "+ total +" | "+ average;
+                textList[i + 2] = getBonusEXPDescription(i) + total +" | "+ average;
                 textBoxWidth = Math.max(textBoxWidth, renderer.getWidth(textList[i + 2]));
             }
         }
@@ -196,15 +242,15 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
     }
 
     public void coinValueFromString(String message){
-        String value = "";
+        StringBuilder value = new StringBuilder();
 
         for (int i = message.lastIndexOf("d") + 2; i < message.lastIndexOf(" "); i++) {
-            value += message.charAt(i);
+            value.append(message.charAt(i));
         }
 
-        if (value.isEmpty()) return;
+        if (value.length() == 0) return;
         //LOGGER.fatal("Coin: " + value);
-        coins += Integer.parseInt(value);
+        coins += Integer.parseInt(value.toString());
     }
 
     public float expValueFromString(String message){
@@ -254,6 +300,66 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
             }
         }
     }
+
+    public void playerEquipmentBonusExp() {
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        // {"Archaeology", "Einherjar", "Fishing", "Herbalism", "Logging", "Mining", "Runecarving"};
+
+
+        if (player != null) {
+            //NbtCompound mainHand = player.getMainHandStack().getOrCreateNbt();
+            NbtCompound offHand = player.getOffHandStack().getOrCreateNbt();
+            ItemStack mainHand = player.getMainHandStack();
+            float[] newEquipmentBonusExp = new float[professionNames.length];
+
+            // offhand MMOITEMS_HANDWORN:b1
+
+            // Check if mainhand item is in Mainhand slot
+            if (!mainHand.getOrCreateNbt().contains("MMOITEMS_HANDWORN") && !(mainHand.getItem() instanceof ArmorItem)){
+                for (int i = 0; i < nbtKeyNames.length; i++) {
+                    mainHandBonusExp[i] = mainHand.getOrCreateNbt().getFloat(nbtKeyNames[i]);
+                }
+            } else {
+                Arrays.fill(mainHandBonusExp, 0f);
+            }
+
+            // Check if offhand item is in Offhand slot
+            if (offHand.contains("MMOITEMS_HANDWORN")){
+                for (int i = 0; i < nbtKeyNames.length; i++) {
+                    newEquipmentBonusExp[i] += offHand.getFloat(nbtKeyNames[i]);
+                }
+            }
+
+            //Check Armor slots
+            Iterable<ItemStack> equippedItems = player.getArmorItems();
+            for (ItemStack items : equippedItems) {
+                for (int i = 0; i < nbtKeyNames.length; i++) {
+                    newEquipmentBonusExp[i] += items.getOrCreateNbt().getFloat(nbtKeyNames[i]);
+                }
+            }
+
+            equipmentBonusExp = newEquipmentBonusExp;
+
+        }
+
+
+
+
+    }
+
+
+
+    private String getBonusEXPDescription(int index) {
+        float bonusValue = mainHandBonusExp[index] + equipmentBonusExp[index];
+
+        if (bonusValue > 0) {
+            return professionNames[index] + ": " + String.format("%.2f", bonusValue) + "% | ";
+        } else {
+            return professionNames[index] + ": 0% | ";
+        }
+
+    }
+
 
 
 }
