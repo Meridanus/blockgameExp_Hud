@@ -353,7 +353,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
         float bonusValue = mainHandBonusExp[index] + equipmentBonusExp[index];
 
         if (bonusValue > 0) {
-            return professionNames[index] + ": " + String.format("%.2f", bonusValue) + "% | ";
+            return professionNames[index] + ": +" + String.format("%.2f", bonusValue) + "% | ";
         } else {
             return professionNames[index] + ": 0% | ";
         }
