@@ -58,7 +58,7 @@ public class BlockgameExpHudConfig implements ConfigData {
         public boolean CHAT_COIN_ENABLED = BlockgameExpHud.DEFAULT_CHAT_COIN_ENABLED;
     }
 
-    @Comment("Advanced Settings")
+    @Comment("Advanced Settings (Game Restart Required!)")
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
     public AdvancedSettings advancedSettings = new AdvancedSettings();
 

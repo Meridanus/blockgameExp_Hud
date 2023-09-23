@@ -46,7 +46,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
     public static final String DEFAULT_EXP_CHAT_TAG = "[EXP]";
     public static final String DEFAULT_COIN_CHAT_TAG = " Coin.";
-    public static final String DEFAULT_COIN_QUEST_CHAT_TAG = " Coins!";
+    public static final String DEFAULT_COIN_QUEST_CHAT_TAG = " Coin!";
     public static final MessageType DEFAULT_MESSAGE_TYPE_VALUE = MessageType.SYSTEM;
     public static final Boolean DEFAULT_ENABLED = true;
     public static final Boolean DEFAULT_CHAT_EXP_ENABLED = true;

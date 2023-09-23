@@ -16,7 +16,7 @@
   "text.autoconfig.blockgame_exp_hud.option.chatSettings": "Chat Settings",
     "text.autoconfig.blockgame_exp_hud.option.chatSettings.CHAT_EXP_ENABLED": "Hide Exp Chat Messages",
     "text.autoconfig.blockgame_exp_hud.option.chatSettings.CHAT_COIN_ENABLED": "Hide Coin Deposit Chat Messages",
-  "text.autoconfig.blockgame_exp_hud.option.advancedSettings": "Advanced Settings",
+  "text.autoconfig.blockgame_exp_hud.option.advancedSettings": "Advanced Settings (Needs Restart!)",
     "text.autoconfig.blockgame_exp_hud.option.advancedSettings.MESSAGE_TYPE": "Chat Message Type",
     "text.autoconfig.blockgame_exp_hud.option.advancedSettings.EXP_CHAT_TAG": "EXP Search Tag",
     "text.autoconfig.blockgame_exp_hud.option.advancedSettings.COIN_CHAT_TAG": "Coin Search Tag",
