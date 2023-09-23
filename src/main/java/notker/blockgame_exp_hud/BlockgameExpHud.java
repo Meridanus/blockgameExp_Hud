@@ -46,6 +46,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
     public static final String DEFAULT_EXP_CHAT_TAG = "[EXP]";
     public static final String DEFAULT_COIN_CHAT_TAG = " Coin.";
+    public static final String DEFAULT_COIN_QUEST_CHAT_TAG = " Coins!";
     public static final MessageType DEFAULT_MESSAGE_TYPE_VALUE = MessageType.SYSTEM;
     public static final Boolean DEFAULT_ENABLED = true;
     public static final Boolean DEFAULT_CHAT_EXP_ENABLED = true;
@@ -59,6 +60,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
     public static final Float DEFAULT_SPACING = 10f;
     public static final Boolean DEFAULT_BACKGROUND_ENABLED = true;
     public static final Integer DEFAULT_BASE_BONUS_EXP = 5;
+
 
 
 
@@ -281,7 +283,6 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
             if (message.contains(professionNames[p])){
                 float currentExp = expValueFromString(message);
                 professionTotalSessionExp[p] += currentExp;
-
 
                 int index = professionSessionExpCount[p];
                 // Make sure index is inside Array Boundary

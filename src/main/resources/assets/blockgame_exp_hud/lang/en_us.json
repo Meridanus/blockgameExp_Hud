@@ -19,5 +19,6 @@
   "text.autoconfig.blockgame_exp_hud.option.advancedSettings": "Advanced Settings",
     "text.autoconfig.blockgame_exp_hud.option.advancedSettings.MESSAGE_TYPE": "Chat Message Type",
     "text.autoconfig.blockgame_exp_hud.option.advancedSettings.EXP_CHAT_TAG": "EXP Search Tag",
-    "text.autoconfig.blockgame_exp_hud.option.advancedSettings.COIN_CHAT_TAG": "Coin Search Tag"
+    "text.autoconfig.blockgame_exp_hud.option.advancedSettings.COIN_CHAT_TAG": "Coin Search Tag",
+    "text.autoconfig.blockgame_exp_hud.option.advancedSettings.COIN_QUEST_CHAT_TAG": "Coin Search Tag For Quests"
 }

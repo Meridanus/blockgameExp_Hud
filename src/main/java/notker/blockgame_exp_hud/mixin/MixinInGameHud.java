@@ -19,7 +19,7 @@ public class MixinInGameHud {
     public void addChatMessage(MessageType messageType, Text text, UUID uUID, CallbackInfo ci) {
 
         BlockgameExpHudConfig config = BlockgameExpHud.config;
-        String expTag, coinTag;
+        String expTag, coinTag, coinQuestTag;
         boolean enabled, hideExp, hideCoin;
         MessageType type;
 
@@ -30,6 +30,7 @@ public class MixinInGameHud {
             type = config.advancedSettings.MESSAGE_TYPE;
             hideExp = config.chatSettings.CHAT_EXP_ENABLED;
             hideCoin = config.chatSettings.CHAT_COIN_ENABLED;
+            coinQuestTag = config.advancedSettings.COIN_QUEST_CHAT_TAG;
         } else {
             expTag = BlockgameExpHud.DEFAULT_EXP_CHAT_TAG;
             coinTag = BlockgameExpHud.DEFAULT_COIN_CHAT_TAG;
@@ -37,26 +38,23 @@ public class MixinInGameHud {
             type = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
             hideExp = BlockgameExpHud.DEFAULT_CHAT_EXP_ENABLED;
             hideCoin = BlockgameExpHud.DEFAULT_CHAT_COIN_ENABLED;
+            coinQuestTag = BlockgameExpHud.DEFAULT_COIN_QUEST_CHAT_TAG;
         }
 
 
         if (enabled && messageType == type){
+            String message = text.getString();
 
-            if (text.getString().endsWith(coinTag)) {
-                BlockgameExpHud.getInstance().coinValueFromString(text.getString());
+            if (message.endsWith(coinTag) || message.endsWith(coinQuestTag)) {
+                BlockgameExpHud.getInstance().coinValueFromString(message);
                 if (hideCoin) ci.cancel();
             }
 
-            if (text.getString().contains(expTag)) {
-                BlockgameExpHud.getInstance().addExp(text.getString());
+            if (message.contains(expTag)) {
+                BlockgameExpHud.getInstance().addExp(message);
                 if (hideExp) ci.cancel();
             }
-
-
         }
-
-
-
 
     }
 }
