@@ -68,9 +68,9 @@ public class BlockgameExpHudConfig implements ConfigData {
         public MessageType MESSAGE_TYPE = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
         @Comment("Chat Message Contains Text")
         public String EXP_CHAT_TAG = BlockgameExpHud.DEFAULT_EXP_CHAT_TAG;
-        @Comment("Chat Message Contains Text")
+        @Comment("Chat Message Ends With Text")
         public String COIN_CHAT_TAG = BlockgameExpHud.DEFAULT_COIN_CHAT_TAG;
-        @Comment("Chat Message Contains Text")
+        @Comment("Chat Message Ends With Text")
         public String COIN_QUEST_CHAT_TAG = BlockgameExpHud.DEFAULT_COIN_QUEST_CHAT_TAG;
     }
 }

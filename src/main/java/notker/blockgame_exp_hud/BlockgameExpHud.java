@@ -11,7 +11,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,9 +18,6 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.MessageType;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.util.Formatting;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,7 +56,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
     public static final Float DEFAULT_SPACING = 10f;
     public static final Boolean DEFAULT_BACKGROUND_ENABLED = true;
     public static final Integer DEFAULT_BASE_BONUS_EXP = 5;
-
+    public static final Integer DEFAULT_BASE_CLASS_EXP = 1;
 
 
 
@@ -281,28 +277,37 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
         for (int p = 0; p < professionNames.length; p++) {
             if (message.contains(professionNames[p])){
-                float currentExp = expValueFromString(message);
-                professionTotalSessionExp[p] += currentExp;
-
-                int index = professionSessionExpCount[p];
-                // Make sure index is inside Array Boundary
-                if (index >= DEFAULT_MAX_SAMPLE_VALUE) {
-                    index = index % DEFAULT_MAX_SAMPLE_VALUE;
+                // add base class exp for professions exept gained class exp
+                int classProfession = professionNames.length - 1;
+                if (p != classProfession) {
+                    addExpToProfessionArrays(1f, classProfession);
                 }
-                // Increment the count
-                professionSessionExpCount[p]++;
-
-                // subtract the old Value that's about to override
-                professionSessionAverageTotalExp[p] -= professionsLastExpValues[p][index];
-                // Add/override the current exp to the array [Profession type][Value]
-                professionsLastExpValues[p][index] = currentExp;
-                // Add current exp to the Sum for the Average
-                professionSessionAverageTotalExp[p] += currentExp;
-
-                // Calculate the Average
-                professionAverageSessionExp[p] = professionSessionAverageTotalExp[p] / Math.min(DEFAULT_MAX_SAMPLE_VALUE, professionSessionExpCount[p]);
+                float currentExp = expValueFromString(message);
+                addExpToProfessionArrays(currentExp, p);
             }
         }
+    }
+
+    private void addExpToProfessionArrays(float currentExp, int p) {
+        professionTotalSessionExp[p] += currentExp;
+
+        int index = professionSessionExpCount[p];
+        // Make sure index is inside Array Boundary
+        if (index >= DEFAULT_MAX_SAMPLE_VALUE) {
+            index = index % DEFAULT_MAX_SAMPLE_VALUE;
+        }
+        // Increment the count
+        professionSessionExpCount[p]++;
+
+        // subtract the old Value that's about to override
+        professionSessionAverageTotalExp[p] -= professionsLastExpValues[p][index];
+        // Add/override the current exp to the array [Profession type][Value]
+        professionsLastExpValues[p][index] = currentExp;
+        // Add current exp to the Sum for the Average
+        professionSessionAverageTotalExp[p] += currentExp;
+
+        // Calculate the Average
+        professionAverageSessionExp[p] = professionSessionAverageTotalExp[p] / Math.min(DEFAULT_MAX_SAMPLE_VALUE, professionSessionExpCount[p]);
     }
 
     public void playerEquipmentBonusExp() {
