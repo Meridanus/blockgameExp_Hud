@@ -55,8 +55,11 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
     public static final Float DEFAULT_Y_POS = 30f;
     public static final Float DEFAULT_SPACING = 10f;
     public static final Boolean DEFAULT_BACKGROUND_ENABLED = true;
-    public static final Integer DEFAULT_BASE_BONUS_EXP = 5;
+    public static final Integer DEFAULT_BASE_BONUS_EXP = 10;
     public static final Integer DEFAULT_BASE_CLASS_EXP = 1;
+
+    public static final String DEFAULT_RUNE_ITEM_TYPE_TAG = "MMOITEMS_ITEM_TYPE";
+    public static final String DEFAULT_RUNE_ITEM_TYPE_VALUE = "RUNECARVING";
 
 
 
@@ -371,7 +374,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
             //LOGGER.info(setArmor[0]);
             // T1 |  T2 |  T3 |  T4 |  T5
-            // 5% | 10% | 15% | 20% | 25%
+            // 10% | 20% | 30% | 40% | 50%
             if (helmet.equals(chest)
             && helmet.equals(leggings)
             && helmet.equals(boots)) {
@@ -379,9 +382,11 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
                 //LOGGER.info("-> 4 Set");
                 //LOGGER.info(professionNames[correspondingProfessionIndex[3]]);
                 //LOGGER.fatal(Integer.parseInt(String.valueOf(setArmor[3].charAt(setArmor[3].length() - 1))) * 5 * 2 + "% Bonus");
-                newEquipmentBonusExp[correspondingProfessionIndex[3]] += getSetBonusExpValue(setArmor[3], 2f);
+                newEquipmentBonusExp[correspondingProfessionIndex[3]] += getSetBonusExpValue(setArmor[3], 1f);
 
-            } else if (helmet.equals(chest) && helmet.equals(leggings)
+            }
+
+            /* else if (helmet.equals(chest) && helmet.equals(leggings)
             || helmet.equals(chest) && helmet.equals(boots)
             || helmet.equals(leggings) && helmet.equals(boots)) {
                 // 3 piece Matching Sets
@@ -415,7 +420,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
                     // 2 piece Matching Sets
                     newEquipmentBonusExp[correspondingProfessionIndex[0]] += getSetBonusExpValue(setArmor[0], 1f);
                 }
-            }
+            }*/
             // Set the new Bonus
             equipmentBonusExp = newEquipmentBonusExp;
         }
