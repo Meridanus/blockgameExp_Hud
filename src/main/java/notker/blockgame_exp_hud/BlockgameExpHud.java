@@ -28,7 +28,6 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
 
-
 public class BlockgameExpHud extends DrawableHelper implements ClientModInitializer {
 
     private static BlockgameExpHud instance;
@@ -59,7 +58,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
     public static final Integer DEFAULT_BASE_CLASS_EXP = 1;
 
     public static final String DEFAULT_RUNE_ITEM_TYPE_TAG = "MMOITEMS_ITEM_TYPE";
-    public static final String DEFAULT_RUNE_ITEM_TYPE_VALUE = "RUNECARVING";
+
 
 
 

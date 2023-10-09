@@ -5,6 +5,7 @@ import net.minecraft.network.MessageType;
 import net.minecraft.text.Text;
 import notker.blockgame_exp_hud.BlockgameExpHud;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
+import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -40,6 +41,7 @@ public class MixinInGameHud {
             hideCoin = BlockgameExpHud.DEFAULT_CHAT_COIN_ENABLED;
             coinQuestTag = BlockgameExpHud.DEFAULT_COIN_QUEST_CHAT_TAG;
         }
+
 
 
         if (enabled && messageType == type){
