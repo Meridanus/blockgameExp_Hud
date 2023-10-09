@@ -81,14 +81,24 @@ public class BlockgameExpHudConfig implements ConfigData {
         public MMOITEMS_ITEM_TYPES ITEM_TYPES = MMOITEMS_ITEM_TYPES.RUNES;
         @Comment("Matching Attribute 1")
         public AttributeTags Rune_TAG_0 = AttributeTags.NONE;
+        @Comment("Min Attribute Value 1")
+        public float Rune_Value_0 = 0.0f;
         @Comment("Matching Attribute 2")
         public AttributeTags Rune_TAG_1 = AttributeTags.NONE;
+        @Comment("Min Attribute Value 2")
+        public float Rune_Value_1 = 0.0f;
         @Comment("Matching Attribute 3")
         public AttributeTags Rune_TAG_2 = AttributeTags.NONE;
+        @Comment("Min Attribute Value 3")
+        public float Rune_Value_2 = 0.0f;
         @Comment("Matching Attribute 4")
         public AttributeTags Rune_TAG_3 = AttributeTags.NONE;
+        @Comment("Min Attribute Value 4")
+        public float Rune_Value_3 = 0.0f;
         @Comment("Matching Attribute 5")
         public AttributeTags Rune_TAG_4 = AttributeTags.NONE;
+        @Comment("Min Attribute Value 5")
+        public float Rune_Value_4 = 0.0f;
         @Comment("Horizontal Offset For The Attribute Text")
         public Integer X_OFFSET = -11;
         @Comment("Vertical Offset For The Attribute Text")

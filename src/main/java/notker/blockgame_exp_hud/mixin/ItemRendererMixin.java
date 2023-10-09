@@ -23,35 +23,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ItemRendererMixin {
     @Shadow public float zOffset;
 
+
     @Inject(at = @At("HEAD"), method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V")
     public void renderGuiItemOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel, CallbackInfo ci) {
-        NbtCompound nbt = stack.getOrCreateNbt();
 
         BlockgameExpHudConfig config = BlockgameExpHud.config;
-        // Check if the config is available and Enabled
-        if (config != null && config.ATTRIBUTES_ENABLED) {
+        // Check if the config is available and Enabled and stack size is 1
+        if (config != null && config.ATTRIBUTES_ENABLED && !stack.isEmpty() && stack.getCount() == 1) {
+            NbtCompound nbt = stack.getOrCreateNbt();
+
             // Checks which item Type to compare
             if (config.attributeSettings.ITEM_TYPES == MMOITEMS_ITEM_TYPES.ALL ||
                 nbt.getString(BlockgameExpHud.DEFAULT_RUNE_ITEM_TYPE_TAG).equals(config.attributeSettings.ITEM_TYPES.tag())) {
 
+                byte[] results = updateTagMatches(nbt, config.attributeSettings.Rune_TAG_0, config.attributeSettings.Rune_Value_0,
+                                    updateTagMatches(nbt, config.attributeSettings.Rune_TAG_1, config.attributeSettings.Rune_Value_1,
+                                        updateTagMatches(nbt, config.attributeSettings.Rune_TAG_2, config.attributeSettings.Rune_Value_2,
+                                            updateTagMatches(nbt, config.attributeSettings.Rune_TAG_3, config.attributeSettings.Rune_Value_3,
+                                                updateTagMatches(nbt, config.attributeSettings.Rune_TAG_4, config.attributeSettings.Rune_Value_4, new byte[2])))));
 
-                byte containTag = 0;
-                byte matchTags = 0;
-                // Check if Tag Exist
-                containTag += config.attributeSettings.Rune_TAG_0 != AttributeTags.NONE ? 1 : 0;
-                containTag += config.attributeSettings.Rune_TAG_1 != AttributeTags.NONE ? 1 : 0;
-                containTag += config.attributeSettings.Rune_TAG_2 != AttributeTags.NONE ? 1 : 0;
-                containTag += config.attributeSettings.Rune_TAG_3 != AttributeTags.NONE ? 1 : 0;
-                containTag += config.attributeSettings.Rune_TAG_4 != AttributeTags.NONE ? 1 : 0;
-
-                // Check if Tag exists on Item
-                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_0.tag()) ? 1 : 0;
-                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_1.tag()) ? 1 : 0;
-                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_2.tag()) ? 1 : 0;
-                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_3.tag()) ? 1 : 0;
-                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_4.tag()) ? 1 : 0;
-
-                if (containTag == matchTags && matchTags > 0 && !stack.isEmpty() && stack.getCount() == 1) {
+                // [0]Tags to match | [1]Tags Matched
+                if (results[0] == results[1] && results[0] > 0 ) {
 
                     MatrixStack matrixStack = new MatrixStack();
                     String string = config.attributeSettings.Rune_String;
@@ -72,5 +64,18 @@ public abstract class ItemRendererMixin {
                 }
             }
         }
+    }
+
+    private byte[] updateTagMatches(NbtCompound nbt, AttributeTags attributeTags, float minValue, byte[] result) {
+        // NONE = ignore
+        if (attributeTags == AttributeTags.NONE) return result;
+        // Tag Present -> TagsToMatch++
+        result[0]++;
+        // Attribute not found on Item
+        if (!nbt.contains(attributeTags.tag())) return result;
+        // Match - Value found and over/equal Threshold -> TagsMatched++
+        if (nbt.getFloat(attributeTags.tag()) >= minValue)  result[1]++;
+        // Match found but under Threshold
+        return result;
     }
 }
