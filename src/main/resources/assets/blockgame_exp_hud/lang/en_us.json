@@ -18,7 +18,7 @@
 
   "text.autoconfig.blockgame_exp_hud.option.attributeSettings": "Attribute Settings",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_String": "Overlay Icon Text",
-    "text.autoconfig.blockgame_exp_hud.option.attributeSettings.STAR_COLOR": "Overlay Icon Text",
+    "text.autoconfig.blockgame_exp_hud.option.attributeSettings.STAR_COLOR": "Overlay Icon Color",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.ITEM_TYPES": "Item Type",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_TAG_0": "Choose Matching Attribute",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_TAG_1": "Choose Matching Attribute",

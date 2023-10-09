@@ -33,15 +33,23 @@ public abstract class ItemRendererMixin {
             if (config.attributeSettings.ITEM_TYPES == MMOITEMS_ITEM_TYPES.ALL ||
                 nbt.getString(BlockgameExpHud.DEFAULT_RUNE_ITEM_TYPE_TAG).equals(config.attributeSettings.ITEM_TYPES.tag())) {
 
-                boolean tags;
-                // Check if Tags Exist and exists on Item
-                tags = config.attributeSettings.Rune_TAG_0 != AttributeTags.NONE && nbt.contains(config.attributeSettings.Rune_TAG_0.tag());
-                tags = config.attributeSettings.Rune_TAG_1 != AttributeTags.NONE ? nbt.contains(config.attributeSettings.Rune_TAG_1.tag()) : tags;
-                tags = config.attributeSettings.Rune_TAG_2 != AttributeTags.NONE ? nbt.contains(config.attributeSettings.Rune_TAG_2.tag()) : tags;
-                tags = config.attributeSettings.Rune_TAG_3 != AttributeTags.NONE ? nbt.contains(config.attributeSettings.Rune_TAG_3.tag()) : tags;
-                tags = config.attributeSettings.Rune_TAG_4 != AttributeTags.NONE ? nbt.contains(config.attributeSettings.Rune_TAG_4.tag()) : tags;
 
-                if (tags && !stack.isEmpty() && stack.getCount() == 1) {
+                byte containTag = 0;
+                byte matchTags = 0;
+                // Check if Tags Exist and exists on Item
+
+                containTag += config.attributeSettings.Rune_TAG_0 != AttributeTags.NONE ? 1 : 0;
+                containTag += config.attributeSettings.Rune_TAG_1 != AttributeTags.NONE ? 1 : 0;
+                containTag += config.attributeSettings.Rune_TAG_2 != AttributeTags.NONE ? 1 : 0;
+                containTag += config.attributeSettings.Rune_TAG_3 != AttributeTags.NONE ? 1 : 0;
+                containTag += config.attributeSettings.Rune_TAG_4 != AttributeTags.NONE ? 1 : 0;
+
+                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_0.tag()) ? 1 : 0;
+                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_1.tag()) ? 1 : 0;
+                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_2.tag()) ? 1 : 0;
+                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_3.tag()) ? 1 : 0;
+                matchTags += nbt.contains(config.attributeSettings.Rune_TAG_4.tag()) ? 1 : 0;
+                if (containTag == matchTags && matchTags > 0 && !stack.isEmpty() && stack.getCount() == 1) {
 
                     MatrixStack matrixStack = new MatrixStack();
                     String string = config.attributeSettings.Rune_String;

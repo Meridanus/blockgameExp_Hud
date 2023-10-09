@@ -90,9 +90,9 @@ public class BlockgameExpHudConfig implements ConfigData {
         @Comment("Matching Attribute 5")
         public AttributeTags Rune_TAG_4 = AttributeTags.NONE;
         @Comment("Horizontal Offset For The Attribute Text")
-        public Integer X_OFFSET = -12;
+        public Integer X_OFFSET = -11;
         @Comment("Vertical Offset For The Attribute Text")
-        public Integer Y_OFFSET = -11;
+        public Integer Y_OFFSET = -10;
     }
 
     @Comment("Advanced Settings (Game Restart Required!)")
