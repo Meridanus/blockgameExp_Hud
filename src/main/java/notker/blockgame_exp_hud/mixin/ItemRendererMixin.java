@@ -9,7 +9,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.OrderedText;
 import notker.blockgame_exp_hud.AttributeTags;
 import notker.blockgame_exp_hud.BlockgameExpHud;
 import notker.blockgame_exp_hud.MMOITEMS_ITEM_TYPES;
@@ -69,7 +68,7 @@ public abstract class ItemRendererMixin {
                             immediate,
                             15728880
                             );
-
+                    immediate.draw();
                 }
             }
         }
