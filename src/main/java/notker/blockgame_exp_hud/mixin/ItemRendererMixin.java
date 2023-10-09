@@ -8,6 +8,8 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.OrderedText;
 import notker.blockgame_exp_hud.AttributeTags;
 import notker.blockgame_exp_hud.BlockgameExpHud;
 import notker.blockgame_exp_hud.MMOITEMS_ITEM_TYPES;
@@ -58,18 +60,16 @@ public abstract class ItemRendererMixin {
                     matrixStack.translate(0.0D, 0.0D, (this.zOffset + 200.0F));
 
                     VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-                    renderer.draw(
-                            string,
-                            (float)(x + 19 - 2 - renderer.getWidth(string) +  config.attributeSettings.X_OFFSET),
+                    renderer.drawWithOutline(new LiteralText(string).asOrderedText(),
+                            (float)(x + 19 - 2 - renderer.getWidth(string) + config.attributeSettings.X_OFFSET) ,
                             (float)(y + 6 + 3 + config.attributeSettings.Y_OFFSET),
                             config.attributeSettings.STAR_COLOR,
-                            true,
+                            0,
                             matrixStack.peek().getPositionMatrix(),
                             immediate,
-                            false,
-                            0,
-                            15728880);
-                    immediate.draw();
+                            15728880
+                            );
+
                 }
             }
         }

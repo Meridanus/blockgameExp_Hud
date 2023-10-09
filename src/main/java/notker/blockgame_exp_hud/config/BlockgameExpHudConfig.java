@@ -72,7 +72,7 @@ public class BlockgameExpHudConfig implements ConfigData {
 
 
         @Comment("The Attribute Text")
-        public String Rune_String = "*";
+        public String Rune_String = "★";
         @Comment("The Attribute Text Color")
         @ConfigEntry.ColorPicker
         public Integer STAR_COLOR = 0xFFEE00;
@@ -90,9 +90,9 @@ public class BlockgameExpHudConfig implements ConfigData {
         @Comment("Matching Attribute 5")
         public AttributeTags Rune_TAG_4 = AttributeTags.NONE;
         @Comment("Horizontal Offset For The Attribute Text")
-        public Integer X_OFFSET = -13;
+        public Integer X_OFFSET = -11;
         @Comment("Vertical Offset For The Attribute Text")
-        public Integer Y_OFFSET = -9;
+        public Integer Y_OFFSET = -11;
     }
 
     @Comment("Advanced Settings (Game Restart Required!)")
