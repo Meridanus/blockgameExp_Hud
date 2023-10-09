@@ -27,28 +27,29 @@ public abstract class ItemRendererMixin {
         NbtCompound nbt = stack.getOrCreateNbt();
 
         BlockgameExpHudConfig config = BlockgameExpHud.config;
-        // Check if the config is available
+        // Check if the config is available and Enabled
         if (config != null && config.ATTRIBUTES_ENABLED) {
-            // Checks which item Type
+            // Checks which item Type to compare
             if (config.attributeSettings.ITEM_TYPES == MMOITEMS_ITEM_TYPES.ALL ||
                 nbt.getString(BlockgameExpHud.DEFAULT_RUNE_ITEM_TYPE_TAG).equals(config.attributeSettings.ITEM_TYPES.tag())) {
 
 
                 byte containTag = 0;
                 byte matchTags = 0;
-                // Check if Tags Exist and exists on Item
-
+                // Check if Tag Exist
                 containTag += config.attributeSettings.Rune_TAG_0 != AttributeTags.NONE ? 1 : 0;
                 containTag += config.attributeSettings.Rune_TAG_1 != AttributeTags.NONE ? 1 : 0;
                 containTag += config.attributeSettings.Rune_TAG_2 != AttributeTags.NONE ? 1 : 0;
                 containTag += config.attributeSettings.Rune_TAG_3 != AttributeTags.NONE ? 1 : 0;
                 containTag += config.attributeSettings.Rune_TAG_4 != AttributeTags.NONE ? 1 : 0;
 
+                // Check if Tag exists on Item
                 matchTags += nbt.contains(config.attributeSettings.Rune_TAG_0.tag()) ? 1 : 0;
                 matchTags += nbt.contains(config.attributeSettings.Rune_TAG_1.tag()) ? 1 : 0;
                 matchTags += nbt.contains(config.attributeSettings.Rune_TAG_2.tag()) ? 1 : 0;
                 matchTags += nbt.contains(config.attributeSettings.Rune_TAG_3.tag()) ? 1 : 0;
                 matchTags += nbt.contains(config.attributeSettings.Rune_TAG_4.tag()) ? 1 : 0;
+
                 if (containTag == matchTags && matchTags > 0 && !stack.isEmpty() && stack.getCount() == 1) {
 
                     MatrixStack matrixStack = new MatrixStack();
