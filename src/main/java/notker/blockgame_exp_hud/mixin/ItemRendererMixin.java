@@ -44,17 +44,18 @@ public abstract class ItemRendererMixin {
 
                 // [0]Tags to match | [1]Tags Matched
                 if (results[0] == results[1] && results[0] > 0 ) {
-
+                    String string = config.attributeSettings.attributeSettingsOptions.Rune_String;
                     MatrixStack matrixStack = new MatrixStack();
-                    String string = config.attributeSettings.Rune_String;
+                    float scale = config.attributeSettings.attributeSettingsOptions.HIGHLIGHT_SCALE;
 
+                    matrixStack.scale(scale, scale, 1);
                     matrixStack.translate(0.0D, 0.0D, (this.zOffset + 200.0F));
 
                     VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
                     renderer.drawWithOutline(new LiteralText(string).asOrderedText(),
-                            (float)(x + 19 - 2 - renderer.getWidth(string) + config.attributeSettings.X_OFFSET) ,
-                            (float)(y + 6 + 3 + config.attributeSettings.Y_OFFSET),
-                            config.attributeSettings.STAR_COLOR,
+                            (x / scale) + 17 - renderer.getWidth(string) + config.attributeSettings.attributeSettingsOptions.X_OFFSET,
+                            (y / scale) + 9 + config.attributeSettings.attributeSettingsOptions.Y_OFFSET,
+                            config.attributeSettings.attributeSettingsOptions.STAR_COLOR,
                             0,
                             matrixStack.peek().getPositionMatrix(),
                             immediate,

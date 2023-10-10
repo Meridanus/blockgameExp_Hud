@@ -20,7 +20,7 @@ public class BlockgameExpHudConfig implements ConfigData {
     public boolean ATTRIBUTES_ENABLED = true;
 
     @Comment("Hud Settings")
-    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
     public HudSettings hudSettings = new HudSettings();
 
     public static class HudSettings {
@@ -51,7 +51,7 @@ public class BlockgameExpHudConfig implements ConfigData {
 
 
     @Comment("Chat Settings")
-    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
     public ChatSettings chatSettings = new ChatSettings();
 
 
@@ -69,13 +69,6 @@ public class BlockgameExpHudConfig implements ConfigData {
     public AttributeSettings attributeSettings = new AttributeSettings();
 
     public static class AttributeSettings {
-
-
-        @Comment("The Attribute Text")
-        public String Rune_String = "★";
-        @Comment("The Attribute Text Color")
-        @ConfigEntry.ColorPicker
-        public Integer STAR_COLOR = 0xFFEE00;
         @Comment("Item Type")
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public MMOITEMS_ITEM_TYPES ITEM_TYPES = MMOITEMS_ITEM_TYPES.RUNES;
@@ -99,9 +92,24 @@ public class BlockgameExpHudConfig implements ConfigData {
         public AttributeTags Rune_TAG_4 = AttributeTags.NONE;
         @Comment("Min Attribute Value 5")
         public float Rune_Value_4 = 0.0f;
-        @Comment("Horizontal Offset For The Attribute Text")
+
+        @Comment("Attribute Settings Options")
+        @ConfigEntry.Gui.CollapsibleObject(startExpanded = false)
+        public AttributeSettingsOptions attributeSettingsOptions = new AttributeSettingsOptions();
+
+    }
+
+    public static class AttributeSettingsOptions {
+        @Comment("Highlight Text")
+        public String Rune_String = "★";
+        @Comment("Highlight Text Scale")
+        public float HIGHLIGHT_SCALE = 1.0f;
+        @Comment("Highlight Color")
+        @ConfigEntry.ColorPicker
+        public Integer STAR_COLOR = 0xFFEE00;
+        @Comment("Horizontal Offset For The Attribute Highlight")
         public Integer X_OFFSET = -11;
-        @Comment("Vertical Offset For The Attribute Text")
+        @Comment("Vertical Offset For The Attribute Highlight")
         public Integer Y_OFFSET = -11;
     }
 

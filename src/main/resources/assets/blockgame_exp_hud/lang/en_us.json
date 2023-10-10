@@ -17,8 +17,6 @@
     "text.autoconfig.blockgame_exp_hud.option.hudSettings.COIN_COLOR": "Hud Coin Text Color",
 
   "text.autoconfig.blockgame_exp_hud.option.attributeSettings": "Attribute Settings",
-    "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_String": "Overlay Icon Text",
-    "text.autoconfig.blockgame_exp_hud.option.attributeSettings.STAR_COLOR": "Overlay Icon Color",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.ITEM_TYPES": "Item Type",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_TAG_0": "Choose Matching Attribute (1)",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_Value_0": "Min Value to Match (1)",
@@ -30,8 +28,13 @@
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_Value_3": "Min Value to Match (4)",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_TAG_4": "Choose Matching Attribute (5)",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_Value_4": "Min Value to Match (5)",
-    "text.autoconfig.blockgame_exp_hud.option.attributeSettings.X_OFFSET": "X Offset Of The Overlay",
-    "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Y_OFFSET": "Y Offset Of The Overlay",
+
+    "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions": "Attribute Advanced Settings",
+      "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.Rune_String": "Highlight Text",
+      "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.HIGHLIGHT_SCALE": "Highlight Text Scale",
+      "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.STAR_COLOR": "Highlight Color",
+      "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.X_OFFSET": "Highlight X Offset",
+      "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.Y_OFFSET": "Highlight Y Offset",
 
   "text.autoconfig.blockgame_exp_hud.option.chatSettings": "Chat Settings",
     "text.autoconfig.blockgame_exp_hud.option.chatSettings.CHAT_EXP_ENABLED": "Hide Exp Chat Messages",
