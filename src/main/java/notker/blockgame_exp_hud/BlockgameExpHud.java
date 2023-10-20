@@ -55,7 +55,6 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
     public static final Float DEFAULT_SPACING = 10f;
     public static final Boolean DEFAULT_BACKGROUND_ENABLED = true;
     public static final Integer DEFAULT_BASE_BONUS_EXP = 10;
-    public static final Integer DEFAULT_BASE_CLASS_EXP = 1;
 
     public static final String DEFAULT_RUNE_ITEM_TYPE_TAG = "MMOITEMS_ITEM_TYPE";
 
