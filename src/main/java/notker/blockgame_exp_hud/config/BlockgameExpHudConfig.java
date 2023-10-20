@@ -108,9 +108,9 @@ public class BlockgameExpHudConfig implements ConfigData {
         @ConfigEntry.ColorPicker
         public Integer STAR_COLOR = 0xFFEE00;
         @Comment("Horizontal Offset For The Attribute Highlight")
-        public Integer X_OFFSET = -11;
+        public float X_OFFSET = -11.0f;
         @Comment("Vertical Offset For The Attribute Highlight")
-        public Integer Y_OFFSET = -11;
+        public float Y_OFFSET = -11.0f;
     }
 
     @Comment("Advanced Settings (Game Restart Required!)")
