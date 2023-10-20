@@ -11,6 +11,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
 import notker.blockgame_exp_hud.AttributeTags;
 import notker.blockgame_exp_hud.BlockgameExpHud;
+import notker.blockgame_exp_hud.ExpHudData;
 import notker.blockgame_exp_hud.MMOITEMS_ITEM_TYPES;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +35,7 @@ public abstract class ItemRendererMixin {
 
             // Checks which item Type to compare
             if (config.attributeSettings.ITEM_TYPES == MMOITEMS_ITEM_TYPES.ALL ||
-                nbt.getString(BlockgameExpHud.DEFAULT_RUNE_ITEM_TYPE_TAG).equals(config.attributeSettings.ITEM_TYPES.tag())) {
+                nbt.getString(ExpHudData.DEFAULT_RUNE_ITEM_TYPE_TAG).equals(config.attributeSettings.ITEM_TYPES.tag())) {
 
                 byte[] results = updateTagMatches(nbt, config.attributeSettings.Rune_TAG_0, config.attributeSettings.Rune_Value_0,
                                     updateTagMatches(nbt, config.attributeSettings.Rune_TAG_1, config.attributeSettings.Rune_Value_1,

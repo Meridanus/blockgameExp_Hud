@@ -7,6 +7,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.minecraft.network.MessageType;
 import notker.blockgame_exp_hud.AttributeTags;
 import notker.blockgame_exp_hud.BlockgameExpHud;
+import notker.blockgame_exp_hud.ExpHudData;
 import notker.blockgame_exp_hud.MMOITEMS_ITEM_TYPES;
 
 
@@ -14,7 +15,7 @@ import notker.blockgame_exp_hud.MMOITEMS_ITEM_TYPES;
 public class BlockgameExpHudConfig implements ConfigData {
 
     @Comment("Hud Enabled?")
-    public boolean ENABLED = BlockgameExpHud.DEFAULT_ENABLED;
+    public boolean ENABLED = true;
 
     @Comment("Attributes Overlay Enabled?")
     public boolean ATTRIBUTES_ENABLED = true;
@@ -25,31 +26,31 @@ public class BlockgameExpHudConfig implements ConfigData {
 
     public static class HudSettings {
         @Comment("Horizontal Position")
-        public Float X_POS = BlockgameExpHud.DEFAULT_X_POS;
+        public Float X_POS = 3f;
 
         @Comment("Vertical Position")
-        public Float Y_POS = BlockgameExpHud.DEFAULT_Y_POS;
+        public Float Y_POS = 30f;
 
         @Comment("Line Spacing")
-        public Float SPACING = BlockgameExpHud.DEFAULT_SPACING;
+        public Float SPACING = 10f;
 
         @Comment("Show Coin In Hud")
-        public boolean COIN_ENABLED = BlockgameExpHud.DEFAULT_COIN_ENABLED;
+        public boolean COIN_ENABLED = true;
 
         @Comment("The EXP Text Color")
         @ConfigEntry.ColorPicker
-        public Integer TEXT_COLOR = BlockgameExpHud.DEFAULT_TEXT_COLOR;
+        public Integer TEXT_COLOR = 0xAAAAAA;
 
         @Comment("The Coin Text Color")
         @ConfigEntry.ColorPicker
-        public Integer COIN_COLOR = BlockgameExpHud.DEFAULT_COIN_COLOR;
+        public Integer COIN_COLOR = 0xFFAA00;
 
         @Comment("HUD Scale")
-        public float HUD_SCALE = BlockgameExpHud.DEFAULT_HUD_SCALE;
+        public float HUD_SCALE = 0.9f;
 
         @Comment("HUD Opacity")
         @ConfigEntry.BoundedDiscrete(min = 0, max = 1)
-        public float HUD_OPACITY = BlockgameExpHud.DEFAULT_HUD_OPACITY;
+        public float HUD_OPACITY = 0.3f;
 
     }
 
@@ -61,11 +62,11 @@ public class BlockgameExpHudConfig implements ConfigData {
 
     public static class ChatSettings {
         @Comment("remove Exp from Chat?")
-        public boolean CHAT_EXP_ENABLED = BlockgameExpHud.DEFAULT_CHAT_EXP_ENABLED;
+        public boolean CHAT_EXP_ENABLED = true;
 
 
         @Comment("remove Coins from chat?")
-        public boolean CHAT_COIN_ENABLED = BlockgameExpHud.DEFAULT_CHAT_COIN_ENABLED;
+        public boolean CHAT_COIN_ENABLED = true;
     }
 
     @Comment("Attribute Highlighting Settings")
@@ -126,16 +127,16 @@ public class BlockgameExpHudConfig implements ConfigData {
         @Comment("Message types: CHAT, SYSTEM, GAME_INFO")
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public MessageType MESSAGE_TYPE = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
+        public MessageType MESSAGE_TYPE = MessageType.SYSTEM;
         @Comment("Chat Message Contains Text")
         @ConfigEntry.Gui.RequiresRestart
-        public String EXP_CHAT_TAG = BlockgameExpHud.DEFAULT_EXP_CHAT_TAG;
+        public String EXP_CHAT_TAG = "[EXP]";
         @Comment("Chat Message Ends With Text")
         @ConfigEntry.Gui.RequiresRestart
-        public String COIN_CHAT_TAG = BlockgameExpHud.DEFAULT_COIN_CHAT_TAG;
+        public String COIN_CHAT_TAG = " Coin.";
         @Comment("Chat Message Ends With Text")
         @ConfigEntry.Gui.RequiresRestart
-        public String COIN_QUEST_CHAT_TAG = BlockgameExpHud.DEFAULT_COIN_QUEST_CHAT_TAG;
+        public String COIN_QUEST_CHAT_TAG = " Coin!";
 
     }
 

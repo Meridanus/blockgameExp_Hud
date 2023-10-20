@@ -17,7 +17,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.MessageType;
 import net.minecraft.text.MutableText;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
 import org.apache.logging.log4j.LogManager;
@@ -27,81 +26,10 @@ import org.lwjgl.glfw.GLFW;
 public class BlockgameExpHud extends DrawableHelper implements ClientModInitializer {
 
     private static BlockgameExpHud instance;
-    public static boolean hideOverlay = false;
-    public static boolean showGlobal = true;
-
     public static Logger LOGGER = LogManager.getLogger("blockgame_exp_hud");
-
     public static BlockgameExpHudConfig config;
     public static ConfigHolder<BlockgameExpHudConfig> configHolder;
-
-    public static final String DEFAULT_EXP_CHAT_TAG = "[EXP]";
-    public static final String DEFAULT_COIN_CHAT_TAG = " Coin.";
-    public static final String DEFAULT_COIN_QUEST_CHAT_TAG = " Coin!";
-    public static final MessageType DEFAULT_MESSAGE_TYPE_VALUE = MessageType.SYSTEM;
-    public static final Boolean DEFAULT_ENABLED = true;
-    public static final Boolean DEFAULT_CHAT_EXP_ENABLED = true;
-    public static final Integer DEFAULT_TEXT_COLOR = 0xAAAAAA;
-    public static final Boolean DEFAULT_CHAT_COIN_ENABLED = true;
-    public static final Boolean DEFAULT_COIN_ENABLED = true;
-    public static final Integer DEFAULT_COIN_COLOR = 0xFFAA00;
-    public static final Integer DEFAULT_MAX_SAMPLE_VALUE = 128;
-    public static final Float DEFAULT_X_POS = 3f;
-    public static final Float DEFAULT_Y_POS = 30f;
-    public static final Float DEFAULT_SPACING = 10f;
-    public static final Integer DEFAULT_BASE_BONUS_EXP = 10;
-    public static final Float DEFAULT_HUD_SCALE = 0.9f;
-    public static final float DEFAULT_HUD_OPACITY = 0.3f;
-
-    public static final String DEFAULT_RUNE_ITEM_TYPE_TAG = "MMOITEMS_ITEM_TYPE";
-
-
-
-    public static final String[] professionNames = {
-            "Archaeology",
-            "Fishing",
-            "Herbalism",
-            "Logging",
-            "Mining",
-            "Runecarving",
-            "Einherjar"};
-    public static  final String[] professionSetNames = {
-            "ARCHAEOLOGIST_",
-            "FISHERMAN_",
-            "BOTANIST_",
-            "LUMBERJACK_",
-            "MINER_"};
-
-    public int[] professionExpIndexes = new int[professionNames.length];
-    public float[] professionTotalExpValues = new float[professionNames.length];
-    public float[] professionTotalAverageValues = new float[professionNames.length];
-
-    public float[] professionSampleTotalExpValues = new float[professionNames.length];
-    public float[] professionSampleAverages = new float[professionNames.length];
-    public float[][] professionLastExpValues = new float[professionNames.length][DEFAULT_MAX_SAMPLE_VALUE];
-
-    public float[] professionLevelValues = new float[professionNames.length];
-
-
-    public static final String[] nbtKeyNames = {
-            AttributeTags.ADD_EXP_ARCHAEOLOGY.tag(),
-            AttributeTags.ADD_EXP_FISHING.tag(),
-            AttributeTags.ADD_EXP_HERBALISM.tag(),
-            AttributeTags.ADD_EXP_LOGGING.tag(),
-            AttributeTags.ADD_EXP_MINING.tag(),
-            AttributeTags.ADD_EXP_RUNECARVING.tag(),
-            AttributeTags.ADD_EXP.tag()
-    };
-
-    public static float[] equipmentBonusExpValues = new float[professionNames.length];
-
-
-
-
-    public int coins = 0;
-
-    public float baseClassExp = 1f;
-
+    public static ExpHudData hudData;
 
     private KeyBinding blockgameExpHudToggleKey;
     private KeyBinding blockgameExpHudSwitchKey;
@@ -114,6 +42,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
         configHolder = AutoConfig.register(BlockgameExpHudConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(BlockgameExpHudConfig.class).getConfig();
+        hudData = new ExpHudData();
 
         LOGGER.info("Config Loaded");
 
@@ -132,17 +61,21 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
         return config;
     }
 
+    public static ExpHudData getHudData() {
+        return hudData;
+    }
+
     //private int lastSelectedSlot = 0;
     int ticksToWait = 15;
     public void tick(MinecraftClient client) {
         BlockgameExpHudConfig config = BlockgameExpHud.getConfig();
         //toggle render
         if (blockgameExpHudToggleKey.wasPressed()) {
-            hideOverlay = !hideOverlay;
+            ExpHudData.hideOverlay = !ExpHudData.hideOverlay;
         }
         //toggle modi
         if (blockgameExpHudSwitchKey.wasPressed()) {
-            showGlobal = !showGlobal;
+            ExpHudData.showGlobal = !ExpHudData.showGlobal;
         }
 
         if (ticksToWait <= 0 && config.ENABLED) {
@@ -162,7 +95,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
     public void onHudRender(MatrixStack matrixStack, float tickDelta) {
         BlockgameExpHudConfig config = BlockgameExpHud.getConfig();
 
-        if (!config.ENABLED || hideOverlay) return;
+        if (!config.ENABLED || ExpHudData.hideOverlay) return;
 
         float startVertical = config.hudSettings.Y_POS;
         float startHorizontal = config.hudSettings.X_POS;
@@ -182,25 +115,25 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
         //renderer.drawWithShadow(matrixStack, HudTextHelper.getProfessionHudText(professionNames[1], 0f, 0f,1000f, 5.64f, textColor), startHorizontal + 50, startVertical + 100, textColor);
         // List of all hud text to calculate the background size and draw
-        MutableText[] textList = new MutableText[BlockgameExpHud.professionNames.length + 2];
+        MutableText[] textList = new MutableText[ExpHudData.professionNames.length + 2];
 
         // Create Title Text
-        textList[0] = showGlobal ? HudTextHelper.getTitleHudText("Session EXP Stats:", textColor) : HudTextHelper.getTitleHudText("Last " + BlockgameExpHud.DEFAULT_MAX_SAMPLE_VALUE + " EXP Stats:", textColor);
+        textList[0] = ExpHudData.showGlobal ? HudTextHelper.getTitleHudText("Session EXP Stats:", textColor) : HudTextHelper.getTitleHudText("Last " + ExpHudData.DEFAULT_MAX_SAMPLE_VALUE + " EXP Stats:", textColor);
         // Create Coin Text
-        if (coins > 0 && coinEnabled) {
-            textList[1] = HudTextHelper.getCoinHudText(coins, coinColor, textColor);
+        if (ExpHudData.coins > 0 && coinEnabled) {
+            textList[1] = HudTextHelper.getCoinHudText(ExpHudData.coins, coinColor, textColor);
         }
         // Create Profession Text
-        for (int i = 0; i < professionNames.length; i++) {
+        for (int i = 0; i < ExpHudData.professionNames.length; i++) {
             // Only Add professions with Exp
-            if (professionTotalExpValues[i] > 0f) {
+            if (ExpHudData.professionTotalExpValues[i] > 0f) {
                 // Create the Profession Texts
                 textList[i + 2] = HudTextHelper.getProfessionHudText(
-                        professionNames[i],
-                        professionLevelValues[i],
-                        equipmentBonusExpValues[i],
-                        showGlobal ? professionTotalExpValues[i] : professionSampleTotalExpValues[i],
-                        showGlobal ? professionTotalAverageValues[i] : professionSampleAverages[i],
+                        ExpHudData.professionNames[i],
+                        ExpHudData.professionLevelValues[i],
+                        ExpHudData.equipmentBonusExpValues[i],
+                        ExpHudData.showGlobal ? ExpHudData.professionTotalExpValues[i] : ExpHudData.professionSampleTotalExpValues[i],
+                        ExpHudData.showGlobal ? ExpHudData.professionTotalAverageValues[i] : ExpHudData.professionSampleAverages[i],
                         textColor
                 );
             }
@@ -209,12 +142,12 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
         // Create the Background
         if (opacity > 0f) {
-            int textBoxHeight = 8;
+            int textBoxHeight = ExpHudData.DEFAULT_TEXT_HEIGHT;
             int textBoxWidth = 0;
-            int borderWidth = 3;
+            int borderWidth = ExpHudData.getHudBackgroundBorderSize();
 
             // Calculate Background Height
-            for (int i = 1; i < textList.length; i++){
+            for (int i = 0; i < textList.length; i++){
                 if (textList[i] != null){
                     // Change the Background box width if the text is wider then the current box
                     textBoxWidth = Math.max(textBoxWidth, renderer.getWidth(textList[i]));
@@ -226,9 +159,9 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
             int backgroundColor = MinecraftClient.getInstance().options.getTextBackgroundColor(opacity);
             fill(matrixStack,
                     (int) startHorizontal - borderWidth,
-                    (int) startVertical - borderWidth,
+                    (int) startVertical - borderWidth ,
                     (int) startHorizontal + textBoxWidth + borderWidth,
-                    (int) startVertical + textBoxHeight + borderWidth,
+                    (int) startVertical + textBoxHeight - borderWidth,
                     backgroundColor);
         }
 
@@ -239,13 +172,13 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
         int row = 1;
 
         // Draw Coin Text
-        if (coins > 0 && coinEnabled) {
+        if (ExpHudData.coins > 0 && coinEnabled) {
             renderer.drawWithShadow(matrixStack, textList[1], startHorizontal, startVertical + ((row) * offset), coinColor);
             row++;
         }
         // Draw Profession Text
-        for (int i = 0; i < professionNames.length; i++) {
-            if (professionTotalExpValues[i] > 0f) {
+        for (int i = 0; i < ExpHudData.professionNames.length; i++) {
+            if (ExpHudData.professionTotalExpValues[i] > 0f) {
                 renderer.drawWithShadow(matrixStack, textList[i + 2], startHorizontal, startVertical + ((row) * offset), textColor);
                 row++;
             }
@@ -262,50 +195,50 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
     }
 
     public void addCoin(String message){
-        coins += HudTextHelper.coinValueFromString(message);
+        ExpHudData.coins += HudTextHelper.coinValueFromString(message);
     }
 
 
     public void addExp(String message){
         // Loop trough Professions and find match
-        for (int p = 0; p < professionNames.length; p++) {
-            if (message.contains(professionNames[p])){
+        for (int p = 0; p < ExpHudData.professionNames.length; p++) {
+            if (message.contains(ExpHudData.professionNames[p])){
                 // add base class exp for professions except gained class exp
-                int classProfession = professionNames.length - 1;
+                int classProfession = ExpHudData.professionNames.length - 1;
                 if (p != classProfession) {
                     // Adds the 1 Class exp
-                    addExpToProfessionArrays(baseClassExp, classProfession);
+                    addExpToProfessionArrays(ExpHudData.baseClassExp, classProfession);
                 }
                 float currentExp = HudTextHelper.expValueFromString(message);
-                professionLevelValues[p] = HudTextHelper.curLvlValueFromString(message);
+                ExpHudData.professionLevelValues[p] = HudTextHelper.curLvlValueFromString(message);
                 addExpToProfessionArrays(currentExp, p);
             }
         }
     }
 
     private void addExpToProfessionArrays(float currentExp, int p) {
-        professionTotalExpValues[p] += currentExp;
+        ExpHudData.professionTotalExpValues[p] += currentExp;
 
-        int index = professionExpIndexes[p];
+        int index = ExpHudData.professionExpIndexes[p];
         // Make sure index is inside Array Boundary
-        if (index >= DEFAULT_MAX_SAMPLE_VALUE) {
-            index = index % DEFAULT_MAX_SAMPLE_VALUE;
+        if (index >= ExpHudData.DEFAULT_MAX_SAMPLE_VALUE) {
+            index = index % ExpHudData.DEFAULT_MAX_SAMPLE_VALUE;
         }
         // Increment the count
-        professionExpIndexes[p]++;
+        ExpHudData.professionExpIndexes[p]++;
 
         // subtract the old Value that's about to override
-        professionSampleTotalExpValues[p] -= professionLastExpValues[p][index];
+        ExpHudData.professionSampleTotalExpValues[p] -= ExpHudData.professionLastExpValues[p][index];
         // Add/override the current exp to the array [Profession type][Value]
-        professionLastExpValues[p][index] = currentExp;
+        ExpHudData.professionLastExpValues[p][index] = currentExp;
         // Add current exp to the Sum for the Average
-        professionSampleTotalExpValues[p] += currentExp;
+        ExpHudData.professionSampleTotalExpValues[p] += currentExp;
 
         // Calculate the Average so the draw event doesn't have to calculate it every time
         // last Sample Average
-        professionSampleAverages[p] = professionSampleTotalExpValues[p] / Math.min(DEFAULT_MAX_SAMPLE_VALUE, professionExpIndexes[p]);
+        ExpHudData.professionSampleAverages[p] = ExpHudData.professionSampleTotalExpValues[p] / Math.min(ExpHudData.DEFAULT_MAX_SAMPLE_VALUE, ExpHudData.professionExpIndexes[p]);
         // Total Average
-        professionTotalAverageValues[p] = professionTotalExpValues[p] / professionExpIndexes[p];
+        ExpHudData.professionTotalAverageValues[p] = ExpHudData.professionTotalExpValues[p] / ExpHudData.professionExpIndexes[p];
     }
 
 
@@ -316,21 +249,21 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
             //NbtCompound mainHand = player.getMainHandStack().getOrCreateNbt();
             NbtCompound offHand = player.getOffHandStack().getOrCreateNbt();
             ItemStack mainHand = player.getMainHandStack();
-            float[] newEquipmentBonusExp = new float[professionNames.length];
+            float[] newEquipmentBonusExp = new float[ExpHudData.professionNames.length];
 
             // offhand MMOITEMS_HANDWORN:b1
 
             // Check if mainhand item is in Mainhand slot
             if (!mainHand.getOrCreateNbt().contains("MMOITEMS_HANDWORN") && !(mainHand.getItem() instanceof ArmorItem)){
-                for (int i = 0; i < nbtKeyNames.length; i++) {
-                    newEquipmentBonusExp[i] = mainHand.getOrCreateNbt().getFloat(nbtKeyNames[i]);
+                for (int i = 0; i < ExpHudData.nbtKeyNames.length; i++) {
+                    newEquipmentBonusExp[i] = mainHand.getOrCreateNbt().getFloat(ExpHudData.nbtKeyNames[i]);
                 }
             }
 
             // Check if offhand item is in Offhand slot
             if (offHand.contains("MMOITEMS_HANDWORN")){
-                for (int i = 0; i < nbtKeyNames.length; i++) {
-                    newEquipmentBonusExp[i] += offHand.getFloat(nbtKeyNames[i]);
+                for (int i = 0; i < ExpHudData.nbtKeyNames.length; i++) {
+                    newEquipmentBonusExp[i] += offHand.getFloat(ExpHudData.nbtKeyNames[i]);
                 }
             }
 
@@ -342,9 +275,9 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
             for (ItemStack items : equippedItems) {
                 //LOGGER.fatal(items.getOrCreateNbt());
                 String setType = items.getOrCreateNbt().getString("MMOITEMS_ITEM_SET");
-                for (int i = 0; i < professionSetNames.length; i++) {
+                for (int i = 0; i < ExpHudData.professionSetNames.length; i++) {
                     // Make sure it's a Profession Type set
-                    if (setType.contains(professionSetNames[i])){
+                    if (setType.contains(ExpHudData.professionSetNames[i])){
                         //put Set Name in to array
                         setArmor[index] = setType;
                         correspondingProfessionIndex[index] = i;
@@ -353,8 +286,8 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
                     }
                 }
                 // Add +EXP% values
-                for (int i = 0; i < nbtKeyNames.length; i++) {
-                    newEquipmentBonusExp[i] += items.getOrCreateNbt().getFloat(nbtKeyNames[i]);
+                for (int i = 0; i < ExpHudData.nbtKeyNames.length; i++) {
+                    newEquipmentBonusExp[i] += items.getOrCreateNbt().getFloat(ExpHudData.nbtKeyNames[i]);
                 }
             }
 
@@ -417,7 +350,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
             }*/
 
             // Set the new Bonus
-            equipmentBonusExpValues = newEquipmentBonusExp;
+            ExpHudData.equipmentBonusExpValues = newEquipmentBonusExp;
         }
     }
 
@@ -427,7 +360,7 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
         // get the Set Tier lvl to multiply with
         int setLvl = Integer.parseInt(String.valueOf(setType.charAt(setType.length() - 1)));
         //LOGGER.info(setLvl * DEFAULT_BASE_BONUS_EXP * multiply);
-        return setLvl * DEFAULT_BASE_BONUS_EXP * multiply;
+        return setLvl * ExpHudData.DEFAULT_BASE_BONUS_EXP * multiply;
     }
 
 
