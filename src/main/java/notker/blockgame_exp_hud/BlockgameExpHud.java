@@ -24,8 +24,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.Arrays;
-
 public class BlockgameExpHud extends DrawableHelper implements ClientModInitializer {
 
     private static BlockgameExpHud instance;
@@ -130,9 +128,14 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
     }
 
+    public static BlockgameExpHudConfig getConfig() {
+        return config;
+    }
+
     //private int lastSelectedSlot = 0;
     int ticksToWait = 15;
     public void tick(MinecraftClient client) {
+        BlockgameExpHudConfig config = BlockgameExpHud.getConfig();
         //toggle render
         if (blockgameExpHudToggleKey.wasPressed()) {
             hideOverlay = !hideOverlay;
@@ -157,34 +160,20 @@ public class BlockgameExpHud extends DrawableHelper implements ClientModInitiali
 
 
     public void onHudRender(MatrixStack matrixStack, float tickDelta) {
-        boolean enabled = config != null ? config.ENABLED : DEFAULT_ENABLED;
-        if (!enabled || hideOverlay) return;
+        BlockgameExpHudConfig config = BlockgameExpHud.getConfig();
 
-        float startVertical, startHorizontal, offset, scale, opacity;
-        int textColor, coinColor;
-        boolean coinEnabled;
+        if (!config.ENABLED || hideOverlay) return;
 
-        // get Config Values
-        if (config != null) {
-            startVertical = config.hudSettings.Y_POS;
-            startHorizontal = config.hudSettings.X_POS;
-            offset = config.hudSettings.SPACING;
-            textColor = config.hudSettings.TEXT_COLOR;
-            coinColor = config.hudSettings.COIN_COLOR;
-            coinEnabled = config.hudSettings.COIN_ENABLED;
-            scale = config.hudSettings.HUD_SCALE;
-            opacity = config.hudSettings.HUD_OPACITY;
-        } else {
-            // Use default values if something is wrong with the config
-            startVertical = DEFAULT_Y_POS;
-            startHorizontal = DEFAULT_X_POS;
-            offset = DEFAULT_SPACING;
-            textColor = DEFAULT_TEXT_COLOR;
-            coinColor = DEFAULT_COIN_COLOR;
-            coinEnabled = DEFAULT_COIN_ENABLED;
-            scale = DEFAULT_HUD_SCALE;
-            opacity = DEFAULT_HUD_OPACITY;
-        }
+        float startVertical = config.hudSettings.Y_POS;
+        float startHorizontal = config.hudSettings.X_POS;
+        float offset = config.hudSettings.SPACING;
+        float scale = config.hudSettings.HUD_SCALE;
+        float opacity = config.hudSettings.HUD_OPACITY;
+
+        int textColor = config.hudSettings.TEXT_COLOR;
+        int coinColor = config.hudSettings.COIN_COLOR;
+
+        boolean coinEnabled = config.hudSettings.COIN_ENABLED;
 
         //Apply the Hud Scale
         matrixStack.scale(scale, scale, 1);

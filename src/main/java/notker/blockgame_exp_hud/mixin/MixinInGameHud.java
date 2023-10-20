@@ -18,30 +18,17 @@ public class MixinInGameHud {
     @Inject(method = "addChatMessage", at = @At("HEAD"), cancellable = true)
     public void addChatMessage(MessageType messageType, Text text, UUID uUID, CallbackInfo ci) {
 
-        BlockgameExpHudConfig config = BlockgameExpHud.config;
-        String expTag, coinTag, coinQuestTag;
-        boolean enabled, hideExp, hideCoin;
-        MessageType type;
+        BlockgameExpHudConfig config = BlockgameExpHud.getConfig();
 
-        if (config != null) {
-            expTag = config.advancedSettings.EXP_CHAT_TAG;
-            coinTag = config.advancedSettings.COIN_CHAT_TAG;
-            enabled = config.ENABLED;
-            type = config.advancedSettings.MESSAGE_TYPE;
-            hideExp = config.chatSettings.CHAT_EXP_ENABLED;
-            hideCoin = config.chatSettings.CHAT_COIN_ENABLED;
-            coinQuestTag = config.advancedSettings.COIN_QUEST_CHAT_TAG;
-        } else {
-            expTag = BlockgameExpHud.DEFAULT_EXP_CHAT_TAG;
-            coinTag = BlockgameExpHud.DEFAULT_COIN_CHAT_TAG;
-            enabled = BlockgameExpHud.DEFAULT_ENABLED;
-            type = BlockgameExpHud.DEFAULT_MESSAGE_TYPE_VALUE;
-            hideExp = BlockgameExpHud.DEFAULT_CHAT_EXP_ENABLED;
-            hideCoin = BlockgameExpHud.DEFAULT_CHAT_COIN_ENABLED;
-            coinQuestTag = BlockgameExpHud.DEFAULT_COIN_QUEST_CHAT_TAG;
-        }
+        String expTag = config.advancedSettings.EXP_CHAT_TAG;
+        String coinTag = config.advancedSettings.COIN_CHAT_TAG;
+        String coinQuestTag = config.advancedSettings.COIN_QUEST_CHAT_TAG;
 
+        MessageType type = config.advancedSettings.MESSAGE_TYPE;
 
+        boolean enabled = config.ENABLED;
+        boolean hideExp = config.chatSettings.CHAT_EXP_ENABLED;
+        boolean hideCoin = config.chatSettings.CHAT_COIN_ENABLED;
 
         if (enabled && messageType == type){
             String message = text.getString();

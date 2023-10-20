@@ -4,13 +4,10 @@ package notker.blockgame_exp_hud;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
-import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
-
-import static notker.blockgame_exp_hud.BlockgameExpHud.showGlobal;
 
 
 public class HudTextHelper {

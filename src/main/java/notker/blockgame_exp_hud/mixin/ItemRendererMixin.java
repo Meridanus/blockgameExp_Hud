@@ -27,9 +27,9 @@ public abstract class ItemRendererMixin {
     @Inject(at = @At("HEAD"), method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V")
     public void renderGuiItemOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel, CallbackInfo ci) {
 
-        BlockgameExpHudConfig config = BlockgameExpHud.config;
+        BlockgameExpHudConfig config = BlockgameExpHud.getConfig();
         // Check if the config is available and Enabled and stack size is 1
-        if (config != null && config.ATTRIBUTES_ENABLED && !stack.isEmpty() && stack.getCount() == 1) {
+        if (config.ATTRIBUTES_ENABLED && !stack.isEmpty() && stack.getCount() == 1) {
             NbtCompound nbt = stack.getOrCreateNbt();
 
             // Checks which item Type to compare
