@@ -1,4 +1,4 @@
-package notker.blockgame_exp_hud;
+package notker.blockgame_exp_hud.helper;
 
 
 import net.minecraft.text.LiteralText;

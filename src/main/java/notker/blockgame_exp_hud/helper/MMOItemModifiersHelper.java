@@ -1,7 +1,7 @@
-package notker.blockgame_exp_hud;
+package notker.blockgame_exp_hud.helper;
 
 @SuppressWarnings("unused")
-public enum AttributeTags {
+public enum MMOItemModifiersHelper {
     NONE( "NoTag"),
 
     // Vanilla stats
@@ -106,7 +106,7 @@ public enum AttributeTags {
 
     private final String tag;
 
-    AttributeTags(String tag) {
+    MMOItemModifiersHelper(String tag) {
         this.tag = tag;
     }
 

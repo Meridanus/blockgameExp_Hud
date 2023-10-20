@@ -1,12 +1,12 @@
-package notker.blockgame_exp_hud;
+package notker.blockgame_exp_hud.helper;
 
-public enum MMOITEMS_ITEM_TYPES {
+public enum MMOItemsItemTypesHelper {
     ALL(""),
     RUNES("RUNECARVING");
 
     private final String tag;
 
-    MMOITEMS_ITEM_TYPES(String tag) {
+    MMOItemsItemTypesHelper(String tag) {
         this.tag = tag;
     }
 

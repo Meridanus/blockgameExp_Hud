@@ -9,10 +9,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
-import notker.blockgame_exp_hud.AttributeTags;
+import notker.blockgame_exp_hud.helper.MMOItemModifiersHelper;
 import notker.blockgame_exp_hud.BlockgameExpHud;
-import notker.blockgame_exp_hud.ExpHudData;
-import notker.blockgame_exp_hud.MMOITEMS_ITEM_TYPES;
+import notker.blockgame_exp_hud.helper.ExpHudDataHelper;
+import notker.blockgame_exp_hud.helper.MMOItemsItemTypesHelper;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,8 +34,8 @@ public abstract class ItemRendererMixin {
             NbtCompound nbt = stack.getOrCreateNbt();
 
             // Checks which item Type to compare
-            if (config.attributeSettings.ITEM_TYPES == MMOITEMS_ITEM_TYPES.ALL ||
-                nbt.getString(ExpHudData.DEFAULT_RUNE_ITEM_TYPE_TAG).equals(config.attributeSettings.ITEM_TYPES.tag())) {
+            if (config.attributeSettings.ITEM_TYPES == MMOItemsItemTypesHelper.ALL ||
+                nbt.getString(ExpHudDataHelper.DEFAULT_RUNE_ITEM_TYPE_TAG).equals(config.attributeSettings.ITEM_TYPES.tag())) {
 
                 byte[] results = updateTagMatches(nbt, config.attributeSettings.Rune_TAG_0, config.attributeSettings.Rune_Value_0,
                                     updateTagMatches(nbt, config.attributeSettings.Rune_TAG_1, config.attributeSettings.Rune_Value_1,
@@ -68,15 +68,15 @@ public abstract class ItemRendererMixin {
         }
     }
 
-    private byte[] updateTagMatches(NbtCompound nbt, AttributeTags attributeTags, float minValue, byte[] result) {
+    private byte[] updateTagMatches(NbtCompound nbt, MMOItemModifiersHelper MMOItemModifiersHelper, float minValue, byte[] result) {
         // NONE = ignore
-        if (attributeTags == AttributeTags.NONE) return result;
+        if (MMOItemModifiersHelper == MMOItemModifiersHelper.NONE) return result;
         // Tag Present -> TagsToMatch++
         result[0]++;
         // Attribute not found on Item
-        if (!nbt.contains(attributeTags.tag())) return result;
+        if (!nbt.contains(MMOItemModifiersHelper.tag())) return result;
         // Match - Value found and over/equal Threshold -> TagsMatched++
-        if (nbt.getFloat(attributeTags.tag()) >= minValue)  result[1]++;
+        if (nbt.getFloat(MMOItemModifiersHelper.tag()) >= minValue)  result[1]++;
         // Match found but under Threshold
         return result;
     }
