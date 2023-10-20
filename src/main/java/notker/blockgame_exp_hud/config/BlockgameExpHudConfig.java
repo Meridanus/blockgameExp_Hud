@@ -33,9 +33,6 @@ public class BlockgameExpHudConfig implements ConfigData {
         @Comment("Line Spacing")
         public Float SPACING = BlockgameExpHud.DEFAULT_SPACING;
 
-        @Comment("Show Hud Background")
-        public boolean BACKGROUND_ENABLED = BlockgameExpHud.DEFAULT_BACKGROUND_ENABLED;
-
         @Comment("Show Coin In Hud")
         public boolean COIN_ENABLED = BlockgameExpHud.DEFAULT_COIN_ENABLED;
 
@@ -46,6 +43,13 @@ public class BlockgameExpHudConfig implements ConfigData {
         @Comment("The Coin Text Color")
         @ConfigEntry.ColorPicker
         public Integer COIN_COLOR = BlockgameExpHud.DEFAULT_COIN_COLOR;
+
+        @Comment("HUD Scale")
+        public float HUD_SCALE = BlockgameExpHud.DEFAULT_HUD_SCALE;
+
+        @Comment("HUD Opacity")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 1)
+        public float HUD_OPACITY = BlockgameExpHud.DEFAULT_HUD_OPACITY;
 
     }
 
@@ -64,7 +68,7 @@ public class BlockgameExpHudConfig implements ConfigData {
         public boolean CHAT_COIN_ENABLED = BlockgameExpHud.DEFAULT_CHAT_COIN_ENABLED;
     }
 
-    @Comment("Attribute Settings")
+    @Comment("Attribute Highlighting Settings")
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     public AttributeSettings attributeSettings = new AttributeSettings();
 

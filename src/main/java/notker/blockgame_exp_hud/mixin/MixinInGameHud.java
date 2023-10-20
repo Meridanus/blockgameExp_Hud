@@ -5,7 +5,6 @@ import net.minecraft.network.MessageType;
 import net.minecraft.text.Text;
 import notker.blockgame_exp_hud.BlockgameExpHud;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -48,7 +47,7 @@ public class MixinInGameHud {
             String message = text.getString();
 
             if (message.endsWith(coinTag) || message.endsWith(coinQuestTag)) {
-                BlockgameExpHud.getInstance().coinValueFromString(message);
+                BlockgameExpHud.getInstance().addCoin(message);
                 if (hideCoin) ci.cancel();
             }
 

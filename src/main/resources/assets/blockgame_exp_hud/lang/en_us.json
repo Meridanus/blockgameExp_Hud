@@ -15,8 +15,10 @@
     "text.autoconfig.blockgame_exp_hud.option.hudSettings.BACKGROUND_ENABLED": "Show Hud Background",
     "text.autoconfig.blockgame_exp_hud.option.hudSettings.TEXT_COLOR": "Hud Text Color",
     "text.autoconfig.blockgame_exp_hud.option.hudSettings.COIN_COLOR": "Hud Coin Text Color",
+    "text.autoconfig.blockgame_exp_hud.option.hudSettings.HUD_SCALE": "Hud Scale Factor",
+    "text.autoconfig.blockgame_exp_hud.option.hudSettings.HUD_OPACITY": "Hud Opacity",
 
-  "text.autoconfig.blockgame_exp_hud.option.attributeSettings": "Attribute Settings",
+  "text.autoconfig.blockgame_exp_hud.option.attributeSettings": "Attribute Highlighting Settings",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.ITEM_TYPES": "Item Type",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_TAG_0": "Choose Matching Attribute (1)",
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.Rune_Value_0": "Min Value to Match (1)",
@@ -31,7 +33,7 @@
 
     "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions": "Attribute Advanced Settings",
       "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.Rune_String": "Highlight Text",
-      "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.HIGHLIGHT_SCALE": "Highlight Text Scale",
+      "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.HIGHLIGHT_SCALE": "Highlight Text Scale Factor",
       "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.STAR_COLOR": "Highlight Color",
       "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.X_OFFSET": "Highlight X Offset",
       "text.autoconfig.blockgame_exp_hud.option.attributeSettings.attributeSettingsOptions.Y_OFFSET": "Highlight Y Offset",
