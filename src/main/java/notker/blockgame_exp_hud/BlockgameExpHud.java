@@ -11,8 +11,6 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
-import notker.blockgame_exp_hud.helper.ExpHudDataHelper;
-import notker.blockgame_exp_hud.helper.HudTextHelper;
 import notker.blockgame_exp_hud.module.EquipmentBonusTick;
 import notker.blockgame_exp_hud.module.ExpHudRender;
 import org.apache.logging.log4j.LogManager;

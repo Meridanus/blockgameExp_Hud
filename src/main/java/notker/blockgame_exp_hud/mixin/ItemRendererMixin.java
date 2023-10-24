@@ -68,15 +68,15 @@ public abstract class ItemRendererMixin {
         }
     }
 
-    private byte[] updateTagMatches(NbtCompound nbt, MMOItemModifiersHelper MMOItemModifiersHelper, float minValue, byte[] result) {
+    private byte[] updateTagMatches(NbtCompound nbt, MMOItemModifiersHelper mMOItemModifiersHelper, float minValue, byte[] result) {
         // NONE = ignore
-        if (MMOItemModifiersHelper == MMOItemModifiersHelper.NONE) return result;
+        if (mMOItemModifiersHelper == MMOItemModifiersHelper.NONE) return result;
         // Tag Present -> TagsToMatch++
         result[0]++;
         // Attribute not found on Item
-        if (!nbt.contains(MMOItemModifiersHelper.tag())) return result;
+        if (!nbt.contains(mMOItemModifiersHelper.tag())) return result;
         // Match - Value found and over/equal Threshold -> TagsMatched++
-        if (nbt.getFloat(MMOItemModifiersHelper.tag()) >= minValue)  result[1]++;
+        if (nbt.getFloat(mMOItemModifiersHelper.tag()) >= minValue)  result[1]++;
         // Match found but under Threshold
         return result;
     }
