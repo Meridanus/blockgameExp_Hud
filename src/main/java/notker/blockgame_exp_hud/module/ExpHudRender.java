@@ -1,9 +1,12 @@
 package notker.blockgame_exp_hud.module;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
+import net.minecraft.util.Identifier;
 import notker.blockgame_exp_hud.BlockgameExpHud;
 import notker.blockgame_exp_hud.helper.ExpHudDataHelper;
 import notker.blockgame_exp_hud.config.BlockgameExpHudConfig;
@@ -16,6 +19,9 @@ public class ExpHudRender {
         BlockgameExpHudConfig config = BlockgameExpHud.getConfig();
 
         if (!config.ENABLED || ExpHudDataHelper.hideOverlay) return;
+        final Identifier BARS_TEXTURE = new Identifier("blockgame_exp_hud", "textures/gui/exp_bars.png");
+        final int WIDTH = 160;
+        final int HEIGHT = 5;
 
         float startVertical = config.hudSettings.Y_POS;
         float startHorizontal = config.hudSettings.X_POS;
@@ -27,6 +33,8 @@ public class ExpHudRender {
         int coinColor = config.hudSettings.COIN_COLOR;
 
         boolean coinEnabled = config.hudSettings.COIN_ENABLED;
+
+
 
         //Apply the Hud Scale
         matrixStack.scale(scale, scale, 1);
@@ -54,7 +62,9 @@ public class ExpHudRender {
                         ExpHudDataHelper.equipmentBonusExpValues[i],
                         ExpHudDataHelper.showGlobal ? ExpHudDataHelper.professionTotalExpValues[i] : ExpHudDataHelper.professionSampleTotalExpValues[i],
                         ExpHudDataHelper.showGlobal ? ExpHudDataHelper.professionTotalAverageValues[i] : ExpHudDataHelper.professionSampleAverages[i],
-                        textColor
+                        textColor,
+                        ExpHudDataHelper.professionTextColors[i]
+
                 );
             }
         }
@@ -66,22 +76,30 @@ public class ExpHudRender {
             int textBoxWidth = 0;
             int borderWidth = ExpHudDataHelper.getHudBackgroundBorderSize();
 
+            for (float lvlValues : ExpHudDataHelper.professionLevelValues) {
+                if (lvlValues > 0) {
+                    textBoxHeight += offset;
+                    textBoxWidth = WIDTH;
+                }
+            }
+
             // Calculate Background Height
-            for (int i = 0; i < textList.length; i++){
-                if (textList[i] != null){
+            for (MutableText mutableText : textList) {
+                if (mutableText != null) {
                     // Change the Background box width if the text is wider then the current box
-                    textBoxWidth = Math.max(textBoxWidth, renderer.getWidth(textList[i]));
+                    textBoxWidth = Math.max(textBoxWidth, renderer.getWidth(mutableText));
                     // Add Line Height
                     textBoxHeight += offset;
                 }
             }
+
             // Draw Background
             int backgroundColor = MinecraftClient.getInstance().options.getTextBackgroundColor(opacity);
             fill(matrixStack,
                     (int) startHorizontal - borderWidth,
                     (int) startVertical - borderWidth ,
                     (int) startHorizontal + textBoxWidth + borderWidth,
-                    (int) startVertical + textBoxHeight - borderWidth,
+                    (int) startVertical + textBoxHeight - (borderWidth * 2),
                     backgroundColor);
         }
 
@@ -93,16 +111,22 @@ public class ExpHudRender {
 
         // Draw Coin Text
         if (ExpHudDataHelper.coins > 0 && coinEnabled) {
-            renderer.drawWithShadow(matrixStack, textList[1], startHorizontal, startVertical + ((row) * offset), coinColor);
+            renderer.drawWithShadow(matrixStack, textList[1], startHorizontal, startVertical + (row * offset), coinColor);
             row++;
         }
         // Draw Profession Text
         for (int i = 0; i < ExpHudDataHelper.professionNames.length; i++) {
             if (ExpHudDataHelper.professionTotalExpValues[i] > 0f) {
-                renderer.drawWithShadow(matrixStack, textList[i + 2], startHorizontal, startVertical + ((row) * offset), textColor);
+                renderer.drawWithShadow(matrixStack, textList[i + 2], startHorizontal, startVertical + (row * offset), 0x000000);
                 row++;
             }
+            if (ExpHudDataHelper.professionLevelValues[i] > 0){
 
+                RenderSystem.setShaderTexture(0, BARS_TEXTURE);
+                DrawableHelper.drawTexture(matrixStack, (int)startHorizontal, (int)(startVertical + (row * offset)),  WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT,WIDTH ,70);
+                DrawableHelper.drawTexture(matrixStack, (int)startHorizontal , (int)(startVertical + (row * offset)), 0, 0, (i + 1) * HEIGHT, (int)(1.6f * ExpHudDataHelper.professionLevelValues[i]), HEIGHT, WIDTH, 70); // XP Bar
+                row ++;
+            }
         }
         // Restore the Default scale after drawing the Hud
         matrixStack.scale(1f / scale, 1f / scale, 1);

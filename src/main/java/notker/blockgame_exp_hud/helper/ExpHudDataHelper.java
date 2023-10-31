@@ -1,7 +1,5 @@
 package notker.blockgame_exp_hud.helper;
 
-import notker.blockgame_exp_hud.helper.MMOItemModifiersHelper;
-
 public class ExpHudDataHelper {
     // Toggle for the Exp Hud Render
     public static boolean hideOverlay = false;
@@ -27,6 +25,16 @@ public class ExpHudDataHelper {
             "Mining",
             "Runecarving",
             "Einherjar"};
+
+    public static final int[] professionTextColors = {
+            0xffeb3b,
+            0x3f51b5,
+            0x0a8f08,
+            0x6d4c41,
+            0x37474f,
+            0x7b1fa2,
+            0xffffff
+    };
     public static  final String[] professionSetNames = {
             "ARCHAEOLOGIST_",
             "FISHERMAN_",
